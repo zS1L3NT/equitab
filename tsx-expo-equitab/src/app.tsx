@@ -3,7 +3,7 @@ import { AppIcon } from "@/config/theme"
 import ErrorScreen from "@/screens/error"
 import FriendsScreen from "@/screens/friends"
 import HomeScreen from "@/screens/home"
-import ProfileScreen from "@/screens/profile"
+import SettingsScreen from "@/screens/settings"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { NavigationContainer } from "@react-navigation/native"
 import ErrorBoundary from "react-native-error-boundary"
@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator()
 enum Routes {
 	HOME = "Home",
 	FRIENDS = "Friends",
-	PROFILE = "Profile",
+	SETTINGS = "Settings",
 }
 
 export default function App() {
@@ -37,7 +37,7 @@ function RootNavigator() {
 				name={Routes.HOME}
 				component={HomeScreen}
 				options={{
-					tabBarIcon: props => <AppIcon name="home-outline" {...props} />,
+					tabBarIcon: props => <AppIcon name="home" {...props} />,
 					headerShadowVisible: false,
 				}}
 			/>
@@ -55,10 +55,10 @@ function RootNavigator() {
 				}}
 			/>
 			<Tab.Screen
-				name={Routes.PROFILE}
-				component={ProfileScreen}
+				name={Routes.SETTINGS}
+				component={SettingsScreen}
 				options={{
-					tabBarIcon: props => <AppIcon name="person-circle" {...props} />,
+					tabBarIcon: props => <AppIcon name="settings" {...props} />,
 				}}
 			/>
 		</Tab.Navigator>

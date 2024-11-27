@@ -1,9 +1,9 @@
 import { Text, View } from "react-native"
 
-export default function ProfileScreen() {
+export default function SettingsScreen() {
 	return (
 		<View>
-			<Text>Profile</Text>
+			<Text>Settings</Text>
 		</View>
 	)
 }
