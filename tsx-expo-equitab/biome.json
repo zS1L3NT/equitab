@@ -25,7 +25,10 @@
 		"rules": {
 			"recommended": true,
 			"correctness": {
-				"noUnusedImports": "warn"
+				"noUnusedImports": "info"
+			},
+			"style": {
+				"useImportType": "info"
 			}
 		}
 	},

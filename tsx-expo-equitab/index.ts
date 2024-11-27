@@ -1,4 +1,5 @@
-import App from "@/App"
+import "@/polyfills"
+import App from "@/app"
 import { registerRootComponent } from "expo"
 
 registerRootComponent(App)
