@@ -1,9 +1,9 @@
 import { Text, View } from "react-native"
 
-export default function DirectTab() {
+export default function IncomingTab() {
 	return (
 		<View>
-			<Text>Direct</Text>
+			<Text>Incoming</Text>
 		</View>
 	)
 }

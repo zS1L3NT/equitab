@@ -1,9 +1,9 @@
 import { Text, View } from "react-native"
 
-export default function GroupTab() {
+export default function GroupsTab() {
 	return (
 		<View>
-			<Text>Group</Text>
+			<Text>Groups</Text>
 		</View>
 	)
 }

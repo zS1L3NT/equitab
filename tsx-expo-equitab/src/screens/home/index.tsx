@@ -1,22 +1,15 @@
+import { ScreenOptions as TopTabsScreenOptions } from "@/lib/top-tabs"
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs"
-import DirectTab from "./direct"
-import GroupTab from "./group"
+import FriendsTab from "./friends"
+import GroupsTab from "./groups"
 
 const Tab = createMaterialTopTabNavigator()
 
 export default function HomeScreen() {
 	return (
-		<Tab.Navigator
-			initialRouteName="Direct Tabs"
-			screenOptions={{
-				tabBarScrollEnabled: true,
-				tabBarLabelStyle: { fontWeight: "600" },
-				tabBarItemStyle: { width: "auto" },
-				tabBarIndicatorStyle: { width: 0.6 },
-			}}
-		>
-			<Tab.Screen name="Direct Tabs" component={DirectTab} />
-			<Tab.Screen name="Group Tabs" component={GroupTab} />
+		<Tab.Navigator initialRouteName="Friends" screenOptions={TopTabsScreenOptions}>
+			<Tab.Screen name="Friends" component={FriendsTab} />
+			<Tab.Screen name="Groups" component={GroupsTab} />
 		</Tab.Navigator>
 	)
 }

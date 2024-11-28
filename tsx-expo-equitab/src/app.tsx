@@ -39,6 +39,11 @@ function RootNavigator() {
 				options={{
 					tabBarIcon: props => <AppIcon name="home" {...props} />,
 					headerShadowVisible: false,
+					headerRight: () => (
+						<HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+							<Item title="Create ledger" iconName="add" onPress={() => {}} />
+						</HeaderButtons>
+					),
 				}}
 			/>
 			<Tab.Screen
@@ -46,10 +51,10 @@ function RootNavigator() {
 				component={FriendsScreen}
 				options={{
 					tabBarIcon: props => <AppIcon name="people" {...props} />,
+					headerShadowVisible: false,
 					headerRight: () => (
 						<HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-							<Item title="Search" iconName="search" onPress={() => {}} />
-							<Item title="Requests" iconName="person-add" onPress={() => {}} />
+							<Item title="Add friend" iconName="person-add" onPress={() => {}} />
 						</HeaderButtons>
 					),
 				}}
