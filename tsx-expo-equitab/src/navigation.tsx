@@ -1,8 +1,8 @@
 import { AppIcon } from "@/config/theme"
+import AddFriendsModal from "@/modals/add-friends"
+import CreateLedgerModal from "@/modals/create-ledger"
 import FriendsScreen from "@/screens/friends"
-import AddFriendsScreen from "@/screens/friends/add-friends"
 import HomeScreen from "@/screens/home"
-import CreateLedgerScreen from "@/screens/home/create-ledger"
 import SettingsScreen from "@/screens/settings"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
@@ -13,8 +13,22 @@ export function RootStackNavigation() {
 	return (
 		<RootStack.Navigator screenOptions={{ headerShown: false }}>
 			<RootStack.Screen name="App" component={RootTabNavigation} />
-			<RootStack.Screen name="AddFriends" component={AddFriendsScreen} />
-			<RootStack.Screen name="CreateLedger" component={CreateLedgerScreen} />
+			<RootStack.Screen
+				name="CreateLedger"
+				component={CreateLedgerModal}
+				options={{
+					presentation: "modal",
+					headerShown: true,
+				}}
+			/>
+			<RootStack.Screen
+				name="AddFriends"
+				component={AddFriendsModal}
+				options={{
+					presentation: "modal",
+					headerShown: true,
+				}}
+			/>
 		</RootStack.Navigator>
 	)
 }
