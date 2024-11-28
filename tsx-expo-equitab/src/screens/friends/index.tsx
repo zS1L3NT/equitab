@@ -1,19 +1,28 @@
-import { ScreenOptions as TopTabsScreenOptions } from "@/lib/top-tabs"
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs"
-import AllTab from "./all"
-import BlockedTab from "./blocked"
-import IncomingTab from "./incoming"
-import OutgoingTab from "./outgoing"
-
-const Tab = createMaterialTopTabNavigator()
+import IconHeaderButton from "@/components/buttons/icon-header-button"
+import { useNavigation } from "@react-navigation/native"
+import { useEffect } from "react"
+import { HeaderButtons, Item } from "react-navigation-header-buttons"
+import { FriendsTabNavigation } from "./navigation"
 
 export default function FriendsScreen() {
-	return (
-		<Tab.Navigator initialRouteName="All" screenOptions={TopTabsScreenOptions}>
-			<Tab.Screen name="All" component={AllTab} />
-			<Tab.Screen name="Incoming" component={IncomingTab} />
-			<Tab.Screen name="Outgoing" component={OutgoingTab} />
-			<Tab.Screen name="Blocked" component={BlockedTab} />
-		</Tab.Navigator>
-	)
+	const navigation = useNavigation()
+
+	useEffect(() => {
+		navigation.setOptions({
+			headerShadowVisible: false,
+			headerRight: () => (
+				<HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+					<Item
+						title="Add Friend"
+						iconName="person-add"
+						onPress={() => {
+							navigation.navigate("AddFriends")
+						}}
+					/>
+				</HeaderButtons>
+			),
+		})
+	}, [navigation])
+
+	return <FriendsTabNavigation />
 }
