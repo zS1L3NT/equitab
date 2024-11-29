@@ -17,7 +17,7 @@ export type AppListItemProps = {
 	onPress?: (e: GestureResponderEvent) => void
 }
 
-type ExtraProps = {
+export type AppListItemExtraProps = {
 	measurements: AppListMeasurements
 	inset: boolean
 	isLast: boolean
@@ -41,7 +41,7 @@ export default function AppListItem({
 	measurements,
 	inset,
 	isLast,
-}: AppListItemProps & ExtraProps) {
+}: AppListItemProps & AppListItemExtraProps) {
 	const theme = useTheme()
 
 	const [isPressing, setIsPressing] = useState(false)
@@ -57,10 +57,7 @@ export default function AppListItem({
 		<View
 			className="relative"
 			style={[
-				{
-					height: HEIGHT,
-					backgroundColor: backgroundColor,
-				},
+				{ height: HEIGHT, backgroundColor },
 				!isLast
 					? {
 							height: HEIGHT + BORDER_SIZE,
@@ -86,7 +83,6 @@ export default function AppListItem({
 				onPressIn={() => setIsPressing(true)}
 				onPressOut={() => setIsPressing(false)}
 				onPress={onPress}
-				disabled={!onPress}
 				style={{ height: HEIGHT }}
 			>
 				<View

@@ -1,10 +1,12 @@
 import { useTheme } from "@react-navigation/native"
 import { FlashList } from "@shopify/flash-list"
+import React from "react"
 import { View } from "react-native"
 import AppListItem, { type AppListMeasurements, type AppListItemProps } from "./list-item"
+import AppListItemShimmer from "./list-item-shimmer"
 
 export type AppListProps = {
-	items: AppListItemProps[]
+	items: (AppListItemProps | null)[]
 	measurements: AppListMeasurements
 	inset?: boolean
 }
@@ -35,14 +37,22 @@ export default function AppList({ items, measurements, inset = false }: AppListP
 				estimatedItemSize={
 					measurements.SIZE + measurements.PADDING_VERTICAL * 2 + measurements.BORDER_SIZE
 				}
-				renderItem={props => (
-					<AppListItem
-						{...props.item}
-						measurements={measurements}
-						inset={inset}
-						isLast={props.index === items.length - 1}
-					/>
-				)}
+				renderItem={props =>
+					props.item ? (
+						<AppListItem
+							{...props.item}
+							measurements={measurements}
+							inset={inset}
+							isLast={props.index === items.length - 1}
+						/>
+					) : (
+						<AppListItemShimmer
+							measurements={measurements}
+							inset={inset}
+							isLast={props.index === items.length - 1}
+						/>
+					)
+				}
 			/>
 		</View>
 	)
