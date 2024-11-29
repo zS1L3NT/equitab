@@ -1,29 +1,38 @@
-import IconHeaderButton from "@/components/buttons/icon-header-button"
+import List from "@/components/list"
+import { getPermission } from "@/lib/permissions/contacts"
 import { useNavigation } from "@react-navigation/native"
-import { useEffect } from "react"
-import { Platform, Text, View } from "react-native"
-import { HeaderButtons, Item } from "react-navigation-header-buttons"
+import { useEffect, useState } from "react"
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
+import type { SearchBarProps } from "react-native-screens"
 
 export default function AddFriendsModal() {
 	const navigation = useNavigation()
 
+	const [query, setQuery] = useState("")
 	useEffect(() => {
 		navigation.setOptions({
-			headerTitle: "Add Friends",
-			headerLeft:
-				Platform.OS === "ios"
-					? () => (
-							<HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-								<Item title="Cancel" onPress={() => navigation.goBack()} />
-							</HeaderButtons>
-						)
-					: undefined,
+			headerSearchBarOptions: {
+				inputType: "phone",
+				placeholder: "Search",
+				onChangeText: e => setQuery(e.nativeEvent.text),
+			} satisfies SearchBarProps,
 		})
 	}, [navigation])
 
+	const [contacts, setContacts] = useState<string[] | null>(null)
+	useEffect(() => {
+		getPermission().then(async granted => {
+			if (!granted) return
+			setContacts([])
+		})
+	}, [])
+
 	return (
-		<View>
-			<Text>Add Friends</Text>
-		</View>
+		<SafeAreaProvider>
+			<SafeAreaView>
+				{!!query && <List.Container title="Search Results" />}
+				{!!contacts && <List.Container title="Contacts" />}
+			</SafeAreaView>
+		</SafeAreaProvider>
 	)
 }

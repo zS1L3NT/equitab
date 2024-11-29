@@ -1,7 +1,7 @@
 {
 	"expo": {
-		"name": "tsx-expo-equitab",
-		"slug": "tsx-expo-equitab",
+		"name": "Equitab",
+		"slug": "equitab",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
@@ -12,6 +12,14 @@
 			"resizeMode": "contain",
 			"backgroundColor": "#ffffff"
 		},
+		"plugins": [
+			[
+				"expo-contacts",
+				{
+					"contactsPermissions": "This allows us to find your friends by their phone number"
+				}
+			]
+		],
 		"jsEngine": "hermes",
 		"ios": {
 			"supportsTablet": true

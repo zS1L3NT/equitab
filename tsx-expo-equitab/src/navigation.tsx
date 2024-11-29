@@ -11,24 +11,24 @@ const RootStack = createNativeStackNavigator<RootStackParamList>()
 export type RootStackParamList = Record<"App" | "AddFriends" | "CreateLedger", undefined>
 export function RootStackNavigation() {
 	return (
-		<RootStack.Navigator screenOptions={{ headerShown: false }}>
-			<RootStack.Screen name="App" component={RootTabNavigation} />
+		<RootStack.Navigator>
 			<RootStack.Screen
-				name="CreateLedger"
-				component={CreateLedgerModal}
-				options={{
-					presentation: "modal",
-					headerShown: true,
-				}}
+				name="App"
+				component={RootTabNavigation}
+				options={{ headerShown: false }}
 			/>
-			<RootStack.Screen
-				name="AddFriends"
-				component={AddFriendsModal}
-				options={{
-					presentation: "modal",
-					headerShown: true,
-				}}
-			/>
+			<RootStack.Group screenOptions={{ presentation: "modal" }}>
+				<RootStack.Screen
+					name="CreateLedger"
+					component={CreateLedgerModal}
+					options={{ headerTitle: "Create Ledger" }}
+				/>
+				<RootStack.Screen
+					name="AddFriends"
+					component={AddFriendsModal}
+					options={{ headerTitle: "Add Friends" }}
+				/>
+			</RootStack.Group>
 		</RootStack.Navigator>
 	)
 }

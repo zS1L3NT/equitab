@@ -8,11 +8,11 @@ import "@/global.css"
 export default function App() {
 	return (
 		<ErrorBoundary FallbackComponent={ErrorScreen}>
-			<NavigationContainer>
-				<SafeAreaProvider>
+			<SafeAreaProvider>
+				<NavigationContainer>
 					<RootStackNavigation />
-				</SafeAreaProvider>
-			</NavigationContainer>
+				</NavigationContainer>
+			</SafeAreaProvider>
 		</ErrorBoundary>
 	)
 }
