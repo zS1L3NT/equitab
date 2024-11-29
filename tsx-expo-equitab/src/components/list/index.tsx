@@ -1,21 +1,34 @@
 import { useTheme } from "@react-navigation/native"
 import { FlashList } from "@shopify/flash-list"
-import React from "react"
 import { View } from "react-native"
-import AppListItem, { type AppListMeasurements, type AppListItemProps } from "./list-item"
+import AppListItem, { type AppListItemProps } from "./list-item"
 import AppListItemShimmer from "./list-item-shimmer"
+import {
+	INSET_LIST_MEASUREMENTS,
+	LARGE_INSET_LIST_MEASUREMENTS,
+	LARGE_LIST_MEASUREMENTS,
+	LIST_MEASUREMENTS,
+} from "./measurements"
 
 export type AppListProps = {
 	items: (AppListItemProps | null)[]
-	measurements: AppListMeasurements
+	large?: boolean
 	inset?: boolean
 }
 
-export default function AppList({ items, measurements, inset = false }: AppListProps) {
+export default function AppList({ items, large = false, inset = false }: AppListProps) {
 	const theme = useTheme()
 
 	const INSET_MARGIN = 16
 	const INSET_BORDER_RADIUS = 12
+
+	const measurements = inset
+		? large
+			? LARGE_INSET_LIST_MEASUREMENTS
+			: INSET_LIST_MEASUREMENTS
+		: large
+			? LARGE_LIST_MEASUREMENTS
+			: LIST_MEASUREMENTS
 
 	return (
 		<View
