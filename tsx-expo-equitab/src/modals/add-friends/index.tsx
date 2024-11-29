@@ -1,4 +1,4 @@
-import List from "@/components/list"
+import AppList from "@/components/list"
 import { getPermission } from "@/lib/permissions/contacts"
 import { useNavigation } from "@react-navigation/native"
 import { useEffect, useState } from "react"
@@ -49,34 +49,22 @@ export default function AddFriendsModal() {
 		<SafeAreaProvider>
 			<SafeAreaView>
 				<ScrollView>
-					{/* {query && (
-						<List.Container title="Results">
-							{results ? (
-								<></>
-							) : (
-								Array.from({ length: 5 }, (_, i) => (
-									// biome-ignore lint/suspicious/noArrayIndexKey: No other key available
-									<List.Shimmer key={i} subtitle leading />
-								))
-							)}
-						</List.Container>
+					{query && (
+						<>
+							<Text className="ms-3.5 my-1.5 text-gray-400">Results</Text>
+							<AppList items={results || Array(5).fill(null)} />
+						</>
 					)}
 
 					{contacts ? (
-						<List.Container title="Contacts">
-							{friendables ? (
-								<></>
-							) : (
-								Array.from({ length: 10 }, (_, i) => (
-									// biome-ignore lint/suspicious/noArrayIndexKey: No other key available
-									<List.Shimmer key={i} subtitle leading />
-								))
-							)}
-						</List.Container>
+						<>
+							<Text className="ms-3.5 my-1.5 text-gray-400">Contacts</Text>
+							<AppList items={friendables || Array(10).fill(null)} />
+						</>
 					) : (
 						<View className="w-3/4 mx-auto mt-4">
 							<Divider className="mb-2" />
-							<Text className="text-center text-sm text-gray-400">
+							<Text className="text-sm text-center text-gray-400">
 								{contacts === undefined
 									? "Allow permission to read your contacts"
 									: contacts === null
@@ -84,7 +72,7 @@ export default function AddFriendsModal() {
 										: "TEST TEXT"}
 							</Text>
 						</View>
-					)} */}
+					)}
 				</ScrollView>
 			</SafeAreaView>
 		</SafeAreaProvider>
