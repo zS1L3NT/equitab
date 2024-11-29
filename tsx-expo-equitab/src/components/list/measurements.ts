@@ -1,0 +1,33 @@
+import type { AppListMeasurements } from "./list-item"
+
+export const LIST_MEASUREMENTS: AppListMeasurements = {
+	SIZE: 40,
+	PADDING_HORIZONTAL: 4,
+	PADDING_VERTICAL: 4,
+	BORDER_SIZE: 0.5,
+	FLEX_GAP: 10,
+}
+
+export const LARGE_LIST_MEASUREMENTS: AppListMeasurements = {
+	SIZE: 60,
+	PADDING_HORIZONTAL: 6,
+	PADDING_VERTICAL: 6,
+	BORDER_SIZE: 0.5,
+	FLEX_GAP: 10,
+}
+
+export const INSET_LIST_MEASUREMENTS: AppListMeasurements = {
+	SIZE: 32,
+	PADDING_HORIZONTAL: 6,
+	PADDING_VERTICAL: 6,
+	BORDER_SIZE: 0.5,
+	FLEX_GAP: 12,
+}
+
+export const LARGE_INSET_LIST_MEASUREMENTS: AppListMeasurements = {
+	SIZE: 32,
+	PADDING_HORIZONTAL: 6,
+	PADDING_VERTICAL: 12,
+	BORDER_SIZE: 0.5,
+	FLEX_GAP: 12,
+}

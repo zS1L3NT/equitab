@@ -49,7 +49,7 @@ export default function AddFriendsModal() {
 		<SafeAreaProvider>
 			<SafeAreaView>
 				<ScrollView>
-					{query && (
+					{/* {query && (
 						<List.Container title="Results">
 							{results ? (
 								<></>
@@ -84,7 +84,7 @@ export default function AddFriendsModal() {
 										: "TEST TEXT"}
 							</Text>
 						</View>
-					)}
+					)} */}
 				</ScrollView>
 			</SafeAreaView>
 		</SafeAreaProvider>
