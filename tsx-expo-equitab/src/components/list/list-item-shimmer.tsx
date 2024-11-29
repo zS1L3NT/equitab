@@ -1,13 +1,30 @@
 import { useTheme } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
-import { Dimensions, View } from "react-native"
+import { useEffect, useRef } from "react"
+import { Animated, Dimensions, View } from "react-native"
+import type ShimmerPlaceholder from "react-native-shimmer-placeholder"
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder"
 import type { AppListItemExtraProps } from "./list-item"
 
-const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
+const Shimmer = createShimmerPlaceholder(LinearGradient)
 
 export default function ListItemShimmer({ measurements, inset, isLast }: AppListItemExtraProps) {
 	const theme = useTheme()
+
+	const leadingRef = useRef<ShimmerPlaceholder>(null)
+	const titleRef = useRef<ShimmerPlaceholder>(null)
+	const subtitleRef = useRef<ShimmerPlaceholder>(null)
+
+	useEffect(() => {
+		if (!leadingRef.current || !titleRef.current || !subtitleRef.current) return
+
+		const shimmer = Animated.stagger(200, [
+			leadingRef.current.getAnimated(),
+			Animated.parallel([titleRef.current.getAnimated(), subtitleRef.current.getAnimated()]),
+		])
+
+		Animated.loop(shimmer).start()
+	}, [])
 
 	const { SIZE, PADDING_HORIZONTAL, PADDING_VERTICAL, BORDER_SIZE, FLEX_GAP } = measurements
 	const HEIGHT = SIZE + PADDING_VERTICAL * 2
@@ -54,7 +71,9 @@ export default function ListItemShimmer({ measurements, inset, isLast }: AppList
 					paddingVertical: PADDING_VERTICAL,
 				}}
 			>
-				<ShimmerPlaceholder
+				<Shimmer
+					ref={leadingRef}
+					stopAutoRun
 					style={{
 						width: SIZE,
 						height: SIZE,
@@ -62,14 +81,18 @@ export default function ListItemShimmer({ measurements, inset, isLast }: AppList
 					}}
 				/>
 				<View className="flex gap-1">
-					<ShimmerPlaceholder
+					<Shimmer
+						ref={titleRef}
+						stopAutoRun
 						style={{
 							width: MAX_CONTENT_WIDTH,
 							height: 17,
 							borderRadius: 4,
 						}}
 					/>
-					<ShimmerPlaceholder
+					<Shimmer
+						ref={subtitleRef}
+						stopAutoRun
 						style={{
 							width: MAX_CONTENT_WIDTH / 2,
 							height: 14,
