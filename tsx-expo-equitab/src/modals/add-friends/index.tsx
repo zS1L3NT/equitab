@@ -2,8 +2,8 @@ import AppList from "@/components/list"
 import { getPermission } from "@/lib/permissions/contacts"
 import { useNavigation } from "@react-navigation/native"
 import { useEffect, useState } from "react"
-import { ScrollView, Text, View } from "react-native"
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
+import { Animated, Easing, ScrollView, Text, View, useAnimatedValue } from "react-native"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 import type { SearchBarProps } from "react-native-screens"
 import { Divider } from "react-navigation-header-buttons"
 
@@ -11,13 +11,30 @@ export default function AddFriendsModal() {
 	const navigation = useNavigation()
 
 	const [query, setQuery] = useState("")
+	const marginTop = useAnimatedValue(108)
 	useEffect(() => {
 		navigation.setOptions({
 			headerSearchBarOptions: {
 				onChangeText: e => setQuery(e.nativeEvent.text),
+				onFocus: () => {
+					Animated.timing(marginTop, {
+						toValue: 108 - 56,
+						duration: 200,
+						easing: Easing.linear,
+						useNativeDriver: false,
+					}).start()
+				},
+				onBlur: () => {
+					Animated.timing(marginTop, {
+						toValue: 108,
+						duration: 200,
+						easing: Easing.linear,
+						useNativeDriver: false,
+					}).start()
+				},
 			} satisfies SearchBarProps,
 		})
-	}, [navigation])
+	}, [marginTop, navigation])
 
 	const [results, setResults] = useState<object[]>()
 	useEffect(() => {
@@ -47,7 +64,7 @@ export default function AddFriendsModal() {
 
 	return (
 		<SafeAreaProvider>
-			<SafeAreaView>
+			<Animated.View style={{ marginTop }}>
 				<ScrollView>
 					{query && (
 						<>
@@ -74,7 +91,7 @@ export default function AddFriendsModal() {
 						</View>
 					)}
 				</ScrollView>
-			</SafeAreaView>
+			</Animated.View>
 		</SafeAreaProvider>
 	)
 }
