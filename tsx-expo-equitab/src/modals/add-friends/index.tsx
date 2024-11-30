@@ -80,7 +80,7 @@ export default function AddFriendsModal() {
 						</>
 					) : (
 						<View className="w-3/4 mx-auto mt-4">
-							<Divider className="mb-2" />
+							{query && <Divider className="mb-2" />}
 							<Text className="text-sm text-center text-gray-400">
 								{contacts === undefined
 									? "Allow permission to read your contacts"
