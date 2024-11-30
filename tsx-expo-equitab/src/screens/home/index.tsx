@@ -1,28 +1,20 @@
-import IconHeaderButton from "@/components/buttons/icon-header-button"
+import type { BottomTabNavigationOptions } from "@react-navigation/bottom-tabs"
 import { useNavigation } from "@react-navigation/native"
 import { useEffect } from "react"
-import { HeaderButtons, Item } from "react-navigation-header-buttons"
-import { HomeTabNavigation } from "./navigation"
+import { Text, View } from "react-native"
 
 export default function HomeScreen() {
 	const navigation = useNavigation()
 
 	useEffect(() => {
 		navigation.setOptions({
-			headerShadowVisible: false,
-			headerRight: () => (
-				<HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-					<Item
-						title="Create Ledger"
-						iconName="add"
-						onPress={() => {
-							navigation.navigate("CreateLedger")
-						}}
-					/>
-				</HeaderButtons>
-			),
-		})
+			headerSearchBarOptions: {},
+		} satisfies BottomTabNavigationOptions)
 	}, [navigation])
 
-	return <HomeTabNavigation />
+	return (
+		<View>
+			<Text>Home</Text>
+		</View>
+	)
 }

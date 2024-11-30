@@ -1,10 +1,10 @@
 import AppList from "@/components/list"
 import { getPermission } from "@/lib/permissions/contacts"
 import { useNavigation } from "@react-navigation/native"
+import type { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import { useEffect, useState } from "react"
 import { Animated, Easing, ScrollView, Text, View, useAnimatedValue } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
-import type { SearchBarProps } from "react-native-screens"
 import { Divider } from "react-navigation-header-buttons"
 
 export default function AddFriendsModal() {
@@ -32,8 +32,8 @@ export default function AddFriendsModal() {
 						useNativeDriver: false,
 					}).start()
 				},
-			} satisfies SearchBarProps,
-		})
+			},
+		} satisfies NativeStackNavigationOptions)
 	}, [marginTop, navigation])
 
 	const [results, setResults] = useState<object[]>()
