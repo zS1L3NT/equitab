@@ -22,13 +22,18 @@
 		],
 		"jsEngine": "hermes",
 		"ios": {
-			"supportsTablet": true
+			"supportsTablet": true,
+			"bundleIdentifier": "com.anonymous.equitab"
 		},
 		"android": {
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#ffffff"
-			}
+			},
+			"permissions": [
+				"android.permission.READ_CONTACTS",
+				"android.permission.WRITE_CONTACTS"
+			]
 		},
 		"web": {
 			"favicon": "./assets/favicon.png",
