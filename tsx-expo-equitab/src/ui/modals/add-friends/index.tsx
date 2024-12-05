@@ -1,5 +1,5 @@
-import AppList from "@/components/list"
 import { getPermission } from "@/lib/permissions/contacts"
+import AppList from "@/ui/components/list"
 import { useNavigation } from "@react-navigation/native"
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import { useEffect, useState } from "react"

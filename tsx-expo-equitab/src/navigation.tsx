@@ -1,14 +1,14 @@
 import { AppIcon } from "@/config/theme"
-import AddFriendsModal from "@/modals/add-friends"
-import CreateLedgerModal from "@/modals/create-ledger"
-import FriendsScreen from "@/screens/friends"
-import HomeScreen from "@/screens/home"
-import SettingsScreen from "@/screens/settings"
+import IconHeaderButton from "@/ui/components/buttons/icon-header-button"
+import AddFriendsModal from "@/ui/modals/add-friends"
+import CreateLedgerModal from "@/ui/modals/create-ledger"
+import FriendsScreen from "@/ui/screens/friends"
+import HomeScreen from "@/ui/screens/home"
+import SettingsScreen from "@/ui/screens/settings"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { useNavigation } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { HeaderButtons, Item } from "react-navigation-header-buttons"
-import IconHeaderButton from "./components/buttons/icon-header-button"
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 export type RootStackParamList = Record<"App" | "AddFriends" | "CreateLedger", undefined>
