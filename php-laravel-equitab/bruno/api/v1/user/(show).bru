@@ -1,0 +1,15 @@
+meta {
+  name: (show)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{HOST}}/api/v1/user
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
