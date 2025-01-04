@@ -14,13 +14,13 @@ class AuthController extends Controller
      */
     public function login(Request $request): array
     {
-        $request->validate([
+        $data = $request->validate([
             'username' => 'required',
             'password' => 'required',
             'device_name' => 'required'
         ]);
 
-        if (!auth()->attempt(request(['username', 'password']))) {
+        if (!auth()->attempt(collect($data)->forget('device_name')->toArray())) {
             throw new InvalidCredentialsException;
         }
 

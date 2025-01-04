@@ -1,0 +1,29 @@
+meta {
+  name: (update)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{HOST}}/api/v1/user
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+    "picture_path":
+    "password": "P@ssw0rd",
+    "password_confirmation": "P@ssw0rd"
+  }
+}
+
+body:multipart-form {
+  _method: PUT
+  phone_number: +6588206212
+  username: zS1L3NT
+}

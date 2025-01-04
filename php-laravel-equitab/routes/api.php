@@ -10,4 +10,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         });
     });
+
+    Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
+        Route::get('/', [\App\Http\Controllers\Api\UserController::class, 'show']);
+        Route::put('/', [\App\Http\Controllers\Api\UserController::class, 'update']);
+    });
 });
