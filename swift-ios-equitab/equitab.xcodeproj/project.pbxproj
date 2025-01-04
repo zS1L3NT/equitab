@@ -35,16 +35,6 @@
 			path = equitab;
 			sourceTree = "<group>";
 		};
-		0485926E2D281016000FF9D4 /* equitabTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = equitabTests;
-			sourceTree = "<group>";
-		};
-		048592782D281016000FF9D4 /* equitabUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = equitabUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,8 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				0485925B2D281014000FF9D4 /* equitab */,
-				0485926E2D281016000FF9D4 /* equitabTests */,
-				048592782D281016000FF9D4 /* equitabUITests */,
 				0485925A2D281014000FF9D4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,9 +118,6 @@
 			dependencies = (
 				0485926D2D281016000FF9D4 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				0485926E2D281016000FF9D4 /* equitabTests */,
-			);
 			name = equitabTests;
 			packageProductDependencies = (
 			);
@@ -152,9 +137,6 @@
 			);
 			dependencies = (
 				048592772D281016000FF9D4 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				048592782D281016000FF9D4 /* equitabUITests */,
 			);
 			name = equitabUITests;
 			packageProductDependencies = (
