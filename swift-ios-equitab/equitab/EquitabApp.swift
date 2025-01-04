@@ -9,10 +9,10 @@ import SwiftUI
 import SwiftData
 
 @main
-struct equitabApp: App {
+struct EquitabApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Equitab()
         }
     }
 }
