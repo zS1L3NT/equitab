@@ -6,10 +6,11 @@ use App\Enums\FriendshipStatus;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
 
     protected $fillable = [
         'username',
@@ -34,4 +35,5 @@ class User extends Authenticatable
         $received = $this->hasMany(Friendship::class, 'from_user_id');
         return $sent->union($received)->latest();
     }
+
 }
