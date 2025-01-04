@@ -19,7 +19,6 @@ return new class extends Migration {
                 FriendshipStatus::Pending->value,
                 FriendshipStatus::Accepted->value,
                 FriendshipStatus::Rejected->value,
-                FriendshipStatus::Blocked->value
             ])->default(FriendshipStatus::Pending->value);
             $table->timestamps();
         });
