@@ -12,11 +12,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('friendships', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(\App\Models\User::class, 'from_user_id')->constrained();
-            $table->foreignIdFor(\App\Models\User::class, 'to_user_id')->constrained();
-            $table->boolean('accepted')->default(false);
-            $table->timestamps();
+            $table->foreignIdFor(\App\Models\User::class, 'user_id')->constrained();
+            $table->foreignIdFor(\App\Models\User::class, 'friend_id')->constrained();
+            $table->timestamp('created_at')->useCurrent();
+
+            $table->unique(['user_id', 'friend_id']);
         });
     }
 
