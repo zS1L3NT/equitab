@@ -13,13 +13,9 @@ return new class extends Migration {
     {
         Schema::create('friendships', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class, "from_user_id")->constrained();
-            $table->foreignIdFor(\App\Models\User::class, "to_user_id")->constrained();
-            $table->enum("status", [
-                FriendshipStatus::Pending->value,
-                FriendshipStatus::Accepted->value,
-                FriendshipStatus::Rejected->value,
-            ])->default(FriendshipStatus::Pending->value);
+            $table->foreignIdFor(\App\Models\User::class, 'from_user_id')->constrained();
+            $table->foreignIdFor(\App\Models\User::class, 'to_user_id')->constrained();
+            $table->boolean('accepted')->default(false);
             $table->timestamps();
         });
     }

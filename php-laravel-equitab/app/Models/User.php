@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\FriendshipStatus;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
@@ -23,7 +24,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use Notifiable, HasApiTokens, HasFactory;
 
     protected $fillable = [
         'username',
@@ -63,7 +64,7 @@ class User extends Authenticatable
     {
         return $this
             ->friendships()
-            ->where('status', FriendshipStatus::Accepted)
+            ->where('accepted', true)
             ->get()
             ->map(fn($f) => $f->other($this));
     }
