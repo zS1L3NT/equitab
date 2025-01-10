@@ -2,20 +2,31 @@
 
 namespace App\Models;
 
-use App\Enums\FriendshipStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $from_user_id
+ * @property int $to_user_id
+ * @property boolean $accepted
+ *
+ * @property User $from_user
+ * @property User $to_user
+ */
 class Friendship extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'from_user_id',
         'to_user_id',
-        'status'
+        'accepted'
     ];
 
     protected $casts = [
-        'status' => FriendshipStatus::class
+        'accepted' => 'boolean'
     ];
 
     public function from_user(): BelongsTo
@@ -26,5 +37,10 @@ class Friendship extends Model
     public function to_user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'to_user_id');
+    }
+
+    public function other(User $user): User | null
+    {
+        return $this->from_user_id == $user->id ? $this->to_user : ($this->to_user_id == $user->id ? $this->from_user : null);
     }
 }

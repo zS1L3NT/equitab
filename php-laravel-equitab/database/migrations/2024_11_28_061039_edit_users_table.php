@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('phone_number', 15)->unique();
             $table->timestamp('phone_number_verified_at')->nullable();
             $table->string('picture_path')->nullable();
+
+            $table->unique('username');
         });
     }
 
