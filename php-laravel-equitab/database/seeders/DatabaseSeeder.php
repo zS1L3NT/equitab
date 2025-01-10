@@ -27,9 +27,14 @@ class DatabaseSeeder extends Seeder
 
             foreach ($users as $_user) {
                 if (fake()->boolean()) {
-                    Friendship::factory()->create([
-                        'from_user_id' => $user->id,
-                        'to_user_id' => $_user->id
+                    Friendship::query()->create([
+                        'user_id' => $user->id,
+                        'friend_id' => $_user->id,
+                    ]);
+
+                    Friendship::query()->create([
+                        'user_id' => $_user->id,
+                        'friend_id' => $user->id,
                     ]);
                 }
             }
