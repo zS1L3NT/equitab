@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\InvalidCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    /**
-     * @throws InvalidCredentialsException
-     */
-    public function login(Request $request): array
+    public function login(Request $request)
     {
         $data = $request->validate([
             'username' => 'required',
@@ -21,7 +17,12 @@ class AuthController extends Controller
         ]);
 
         if (!auth()->attempt(collect($data)->forget('device_name')->toArray())) {
-            throw new InvalidCredentialsException;
+            return response([
+                'error' => [
+                    'type' => 'Invalid credentials',
+                    'message' => 'The username or password provided is incorrect.'
+                ]
+            ], \Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
         }
 
         /** @var User $user */

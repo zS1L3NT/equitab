@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\FriendshipStatus;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
@@ -21,6 +21,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $password
  *
  * @property Collection<User> $friends
+ * @property Collection<User> $outgoing_friends
+ * @property Collection<User> $incoming_friends
  */
 class User extends Authenticatable
 {
@@ -36,6 +38,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'pivot'
     ];
 
     protected $casts = [
@@ -53,19 +56,18 @@ class User extends Authenticatable
         $this->attributes['picture_path'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/users/' . $this->username . '.png') : $picture;
     }
 
-    public function friendships(): HasMany
+    public function friends(): BelongsToMany
     {
-        $sent = $this->hasMany(Friendship::class, 'to_user_id');
-        $received = $this->hasMany(Friendship::class, 'from_user_id');
-        return $sent->union($received)->latest();
+        return $this->belongsToMany(User::class, Friendship::class, 'user_id', 'friend_id');
     }
 
-    public function getFriendsAttribute()
+    public function outgoing_friends(): BelongsToMany
     {
-        return $this
-            ->friendships()
-            ->where('accepted', true)
-            ->get()
-            ->map(fn($f) => $f->other($this));
+        return $this->belongsToMany(User::class, FriendRequest::class, 'from_user_id', 'to_user_id');
+    }
+
+    public function incoming_friends(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, FriendRequest::class, 'to_user_id', 'from_user_id');
     }
 }
