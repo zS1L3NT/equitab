@@ -1,0 +1,19 @@
+meta {
+  name: Incoming friend request
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{HOST}}/api/v1/friends/requests?type=incoming
+  body: none
+  auth: bearer
+}
+
+params:query {
+  type: incoming
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
