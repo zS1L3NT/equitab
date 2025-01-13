@@ -66,17 +66,11 @@ class FriendRequestController extends Controller
         }
 
         if ($user->incoming_friends()->where('users.id', $friend->id)->first()) {
-            $user->incoming_friends()->detach($friend);
-
             DB::transaction(function () use ($user, $friend) {
-                Friendship::create([
-                    'user_id' => $user->id,
-                    'friend_id' => $friend->id
-                ]);
-                Friendship::create([
-                    'user_id' => $friend->id,
-                    'friend_id' => $user->id,
-                ]);
+                $user->incoming_friends()->detach($friend);
+
+                $user->friends()->attach($friend);
+                $friend->friends()->attach($user);
             });
 
             return response([
