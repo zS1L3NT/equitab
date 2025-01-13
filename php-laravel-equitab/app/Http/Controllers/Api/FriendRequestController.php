@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\FriendRequest;
-use App\Models\Friendship;
 use App\Models\User;
 use DB;
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class FriendRequestController extends Controller
 {
@@ -44,7 +42,7 @@ class FriendRequestController extends Controller
                     'type' => 'You can\'t befriend yourself',
                     'message' => 'You can\'t add friends with yourself!'
                 ]
-            ], \Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if ($user->friends()->where('friend_id', $friend->id)->exists()) {
@@ -53,7 +51,7 @@ class FriendRequestController extends Controller
                     'type' => 'Already friends',
                     'message' => 'You\'re already friends with this user.'
                 ]
-            ], \Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if ($user->outgoing_friends()->where('users.id', $friend->id)->exists()) {
@@ -62,7 +60,7 @@ class FriendRequestController extends Controller
                     'type' => 'Friend request already sent',
                     'message' => 'You\'ve already sent a friend request to this user, please wait for their response'
                 ]
-            ], \Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if ($user->incoming_friends()->where('users.id', $friend->id)->first()) {
@@ -77,7 +75,7 @@ class FriendRequestController extends Controller
                 'data' => [
                     'message' => 'Friend added successfully!'
                 ]
-            ], \Symfony\Component\HttpFoundation\Response::HTTP_CREATED);
+            ], Response::HTTP_CREATED);
         } else {
             $user->outgoing_friends()->attach($friend);
 
@@ -85,7 +83,7 @@ class FriendRequestController extends Controller
                 'data' => [
                     'message' => 'Friend request sent.'
                 ]
-            ], \Symfony\Component\HttpFoundation\Response::HTTP_CREATED);
+            ], Response::HTTP_CREATED);
         }
     }
 
@@ -119,7 +117,7 @@ class FriendRequestController extends Controller
                     'type' => 'Not Found Error',
                     'message' => 'Friend request not found.'
                 ]
-            ], \Symfony\Component\HttpFoundation\Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_NOT_FOUND);
         }
     }
 }
