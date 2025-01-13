@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
@@ -58,16 +57,16 @@ class User extends Authenticatable
 
     public function friends(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, Friendship::class, 'user_id', 'friend_id');
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id');
     }
 
     public function outgoing_friends(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, FriendRequest::class, 'from_user_id', 'to_user_id');
+        return $this->belongsToMany(User::class, 'friend_requests', 'from_user_id', 'to_user_id');
     }
 
     public function incoming_friends(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, FriendRequest::class, 'to_user_id', 'from_user_id');
+        return $this->belongsToMany(User::class, 'friend_requests', 'to_user_id', 'from_user_id');
     }
 }

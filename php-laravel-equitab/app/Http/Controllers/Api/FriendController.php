@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\AlreadyFriendsException;
 use App\Http\Controllers\Controller;
-use App\Models\Friendship;
 use App\Models\User;
 use DB;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class FriendController extends Controller
 {
@@ -39,7 +37,7 @@ class FriendController extends Controller
                     'type' => 'Not friends',
                     'message' => 'You aren\'t even friends in the first place!'
                 ]
-            ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
+            ], Response::HTTP_OK);
         }
 
         DB::transaction(function () use ($user, $friend) {
