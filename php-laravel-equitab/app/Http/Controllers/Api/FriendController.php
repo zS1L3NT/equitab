@@ -42,8 +42,10 @@ class FriendController extends Controller
             ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
         }
 
-        $user->friends()->detach($friend);
-        $friend->friends()->detatch($user);
+        DB::transaction(function () use ($user, $friend) {
+            $user->friends()->detach($friend);
+            $friend->friends()->detach($user);
+        });
 
         return [
             'data' => [
