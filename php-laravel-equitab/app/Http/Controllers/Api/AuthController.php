@@ -26,23 +26,22 @@ class AuthController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        /** @var User $user */
-        $user = auth()->user();
-
         return [
             'data' => [
-                'token' => $user->createToken(request('device_name') . " @ " . $request->ip())->plainTextToken,
-                'message' => 'Logged in successfully'
+                'message' => 'Logged in successfully.',
+                'token' => auth()->user()->createToken(request('device_name') . " @ " . $request->ip())->plainTextToken,
             ]
         ];
     }
 
-    public function logout(): array
+    public function logout()
     {
         auth()->user()->tokens()->delete();
 
         return [
-            'data' => ['message' => 'Logged out successfully']
+            'data' => [
+                'message' => 'Logged out successfully.'
+            ]
         ];
     }
 }

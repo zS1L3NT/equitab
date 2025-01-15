@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class FriendRequestController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        return ['data' => ($request->type == 'incoming' ? $user->incoming_friends() : $user->outgoing_friends())->paginate()];
+        return UserResource::collection(($request->type == 'incoming' ? $user->incoming_friends() : $user->outgoing_friends())->paginate());
     }
 
     public function store(User $friend)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -11,7 +12,7 @@ class UserController extends Controller
 {
     public function show(): array
     {
-        return ['data' => auth()->user()];
+        return ['data' => new UserResource(auth()->user())];
     }
 
     public function update(Request $request): array
@@ -41,7 +42,6 @@ class UserController extends Controller
         return [
             'data' => [
                 'message' => 'User updated successfully',
-                'user' => $user
             ]
         ];
     }
