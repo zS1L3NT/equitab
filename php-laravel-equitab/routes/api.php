@@ -10,15 +10,12 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::singleton('user', \App\Http\Controllers\Api\UserController::class)->except('edit');
 
-        Route::group(['prefix' => 'friends'], function() {
-            Route::get('/', [\App\Http\Controllers\Api\FriendController::class, 'index']);
-            Route::delete('{friend}', [\App\Http\Controllers\Api\FriendController::class, 'destroy']);
-
-            Route::group(['prefix' => 'requests'], function() {
-                Route::get('/', [\App\Http\Controllers\Api\FriendRequestController::class, 'index']);
-                Route::post('{friend}', [\App\Http\Controllers\Api\FriendRequestController::class, 'store']);
-                Route::delete('{friend}', [\App\Http\Controllers\Api\FriendRequestController::class, 'destroy']);
-            });
+        Route::group(['prefix' => 'friends/requests'], function() {
+            Route::get('/', [\App\Http\Controllers\Api\FriendRequestController::class, 'index']);
+            Route::post('{friend}', [\App\Http\Controllers\Api\FriendRequestController::class, 'store']);
+            Route::delete('{friend}', [\App\Http\Controllers\Api\FriendRequestController::class, 'destroy']);
         });
+
+        Route::apiResource('friends', \App\Http\Controllers\Api\FriendController::class)->except(['store', 'update']);
     });
 });

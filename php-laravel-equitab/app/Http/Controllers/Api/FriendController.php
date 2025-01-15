@@ -26,6 +26,22 @@ class FriendController extends Controller
         ];
     }
 
+    public function show(User $friend) {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if (!$user->friends()->where('users.id', $friend->id)->exists()) {
+            return response([
+                'error' => [
+                    'type' => 'Not friends',
+                    'message' => 'You aren\'t friends with this user.'
+                ]
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        return ['data' => $friend];
+    }
+
     public function destroy(User $friend)
     {
         /** @var User $user */
