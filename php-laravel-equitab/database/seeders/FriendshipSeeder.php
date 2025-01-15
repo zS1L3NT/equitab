@@ -18,7 +18,14 @@ class FriendshipSeeder extends Seeder
 
         foreach ($users as $user) {
             $count = fake()->numberBetween(static::USER_FRIENDS_MIN, $users->count());
-            $user->friends()->attach($users->random($count));
+
+            foreach ($users->random($count) as $friend) {
+                if ($user->id == $friend->id) continue;
+                if ($user->friends()->where('friend_id', $friend->id)->exists()) continue;
+
+                $user->friends()->attach($friend);
+                $friend->friends()->attach($user);
+            }
         }
     }
 }
