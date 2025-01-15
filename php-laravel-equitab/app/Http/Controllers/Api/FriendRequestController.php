@@ -17,18 +17,7 @@ class FriendRequestController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $paginate = $request->type == 'incoming'
-            ? $user->incoming_friends()->paginate(25)
-            : $user->outgoing_friends()->paginate(25);
-
-        return [
-            'data' => [
-                'users' => $paginate->items(),
-                'page' => $paginate->currentPage(),
-                'pages' => $paginate->lastPage(),
-                'per_page' => $paginate->perPage(),
-            ]
-        ];
+        return ['data' => ($request->type == 'incoming' ? $user->incoming_friends() : $user->outgoing_friends())->paginate()];
     }
 
     public function store(User $friend)

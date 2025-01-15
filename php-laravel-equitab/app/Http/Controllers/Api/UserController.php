@@ -11,10 +11,7 @@ class UserController extends Controller
 {
     public function show(): array
     {
-        /** @var User $user */
-        $user = auth()->user();
-
-        return ['data' => $user];
+        return ['data' => auth()->user()];
     }
 
     public function update(Request $request): array

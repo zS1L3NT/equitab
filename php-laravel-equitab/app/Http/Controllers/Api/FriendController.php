@@ -11,19 +11,7 @@ class FriendController extends Controller
 {
     public function index(): array
     {
-        /** @var User $user */
-        $user = auth()->user();
-
-        $paginate = $user->friends()->paginate(25);
-
-        return [
-            'data' => [
-                'users' => $paginate->items(),
-                'page' => $paginate->currentPage(),
-                'pages' => $paginate->lastPage(),
-                'per_page' => $paginate->perPage(),
-            ],
-        ];
+        return ['data' => auth()->user()->friends()->paginate()];
     }
 
     public function show(User $friend) {
