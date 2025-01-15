@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\JsonApiMiddleware;
+use App\Http\Middleware\EnsureJsonApi;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(prepend: [
-            JsonApiMiddleware::class
+            EnsureJsonApi::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
