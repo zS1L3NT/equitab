@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class FriendController extends Controller
 {
-    public function index(): array
+    public function index()
     {
-        return ['data' => auth()->user()->friends()->paginate()];
+        return UserResource::collection(auth()->user()->friends()->paginate());
     }
 
     public function show(User $friend) {
@@ -27,7 +28,7 @@ class FriendController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-        return ['data' => $friend];
+        return ['data' => new UserResource($friend)];
     }
 
     public function destroy(User $friend)
@@ -54,6 +55,5 @@ class FriendController extends Controller
                 'message' => 'Friend removed.'
             ]
         ];
-
     }
 }
