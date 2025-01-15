@@ -25,6 +25,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use Notifiable, HasApiTokens, HasFactory;
 
     protected $fillable = [
@@ -68,5 +69,17 @@ class User extends Authenticatable
     public function incoming_friends(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'friend_requests', 'to_user_id', 'from_user_id');
+    }
+
+    public function ledgers() {
+        return $this->belongsToMany(Ledger::class);
+    }
+
+    public function transactions() {
+        return $this->hasMany(Transaction::class, 'ower_id');
+    }
+
+    public function products() {
+        return $this->hasMany(Product::class, 'ower_id');
     }
 }
