@@ -17,5 +17,9 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         Route::apiResource('friends', \App\Http\Controllers\Api\FriendController::class)->except(['store', 'update']);
+
+        Route::group(['middleware' => [\App\Http\Middleware\EnsureBelongsToLedger::class]], function() {
+            Route::apiResource('ledgers', \App\Http\Controllers\Api\LedgerController::class);
+        });
     });
 });

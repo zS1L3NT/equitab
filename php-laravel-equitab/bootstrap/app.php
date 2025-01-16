@@ -3,6 +3,7 @@
 use App\Http\Middleware\EnsureJsonApi;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -53,6 +54,17 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (NotFoundHttpException | RouteNotFoundException $e) {
+            $pe = $e->getPrevious();
+            if ($pe instanceof ModelNotFoundException) {
+                $model = substr($pe->getModel(), 11);
+                return response([
+                    'error' => [
+                        'type' => $model . ' not found',
+                        'message' => 'A ' . strtolower($model) . ' with that ID doesn\'t exist.'
+                    ]
+                ], Response::HTTP_NOT_FOUND);
+            }
+
             return response([
                 'error' => [
                     'type' => 'Not Found Error',
