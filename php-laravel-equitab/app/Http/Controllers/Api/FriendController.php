@@ -16,10 +16,7 @@ class FriendController extends Controller
     }
 
     public function show(User $friend) {
-        /** @var User $user */
-        $user = auth()->user();
-
-        if (!$user->friends()->where('users.id', $friend->id)->exists()) {
+        if (!auth()->user()->friends()->where('users.id', $friend->id)->exists()) {
             return response([
                 'error' => [
                     'type' => 'Not friends',
@@ -42,7 +39,7 @@ class FriendController extends Controller
                     'type' => 'Not friends',
                     'message' => 'You aren\'t even friends in the first place!'
                 ]
-            ], Response::HTTP_OK);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         DB::transaction(function () use ($user, $friend) {

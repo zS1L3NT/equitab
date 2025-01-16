@@ -29,7 +29,7 @@ class AuthController extends Controller
         return [
             'data' => [
                 'message' => 'Logged in successfully.',
-                'token' => auth()->user()->createToken(request('device_name') . " @ " . $request->ip())->plainTextToken,
+                'token' => auth()->user()->createToken($request->device_name . " @ " . $request->ip())->plainTextToken,
             ]
         ];
     }
