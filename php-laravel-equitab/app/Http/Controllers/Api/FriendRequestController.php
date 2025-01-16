@@ -13,12 +13,11 @@ class FriendRequestController extends Controller
 {
     public function index(Request $request)
     {
-        $request->validate(['type' => 'required|in:incoming,outgoing']);
+        $request->validate([
+            'type' => 'required|in:incoming,outgoing'
+        ]);
 
-        /** @var User $user */
-        $user = auth()->user();
-
-        return UserResource::collection(($request->type == 'incoming' ? $user->incoming_friends() : $user->outgoing_friends())->paginate());
+        return UserResource::collection(auth()->user()->{$request->type . '_friends'}()->paginate());
     }
 
     public function store(User $friend)
@@ -29,7 +28,7 @@ class FriendRequestController extends Controller
         if ($user->id === $friend->id) {
             return response([
                 'error' => [
-                    'type' => 'You can\'t befriend yourself',
+                    'type' => 'Invalid friend',
                     'message' => 'You can\'t add friends with yourself!'
                 ]
             ], Response::HTTP_BAD_REQUEST);
@@ -47,8 +46,8 @@ class FriendRequestController extends Controller
         if ($user->outgoing_friends()->where('users.id', $friend->id)->exists()) {
             return response([
                 'error' => [
-                    'type' => 'Friend request already sent',
-                    'message' => 'You\'ve already sent a friend request to this user, please wait for their response'
+                    'type' => 'Friend request alraedy sent',
+                    'message' => 'You\'ve already sent a friend request to this user, please wait for their response.'
                 ]
             ], Response::HTTP_BAD_REQUEST);
         }
@@ -62,17 +61,13 @@ class FriendRequestController extends Controller
             });
 
             return response([
-                'data' => [
-                    'message' => 'Friend added successfully!'
-                ]
+                'message' => 'Friend added successfully!'
             ], Response::HTTP_CREATED);
         } else {
             $user->outgoing_friends()->attach($friend);
 
             return response([
-                'data' => [
-                    'message' => 'Friend request sent.'
-                ]
+                'message' => 'Friend request sent.'
             ], Response::HTTP_CREATED);
         }
     }
@@ -89,22 +84,18 @@ class FriendRequestController extends Controller
             $user->outgoing_friends()->detach($friend);
 
             return [
-                'data' => [
-                    'message' => 'Friend request cancelled.'
-                ]
+                'message' => 'Friend request cancelled.'
             ];
         } else if ($incoming) {
             $user->incoming_friends()->detach($friend);
 
             return [
-                'data' => [
-                    'message' => 'Friend request rejected.'
-                ]
+                'message' => 'Friend request rejected.'
             ];
         } else {
             return response([
                 'error' => [
-                    'type' => 'Not Found Error',
+                    'type' => 'Not found error',
                     'message' => 'Friend request not found.'
                 ]
             ], Response::HTTP_NOT_FOUND);

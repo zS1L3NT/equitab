@@ -27,15 +27,15 @@ class LedgerController extends Controller
         $ledger->users()->attach(auth()->user());
 
         return response([
-            'data' => [
-                'message' => 'Ledger created!'
-            ]
+            'message' => 'Ledger created!'
         ], Response::HTTP_CREATED);
     }
 
     public function show(Ledger $ledger)
     {
-        return ['data' => new LedgerResource($ledger)];
+        return [
+            'data' => new LedgerResource($ledger)
+        ];
     }
 
     public function update(Request $request, Ledger $ledger)
@@ -49,9 +49,7 @@ class LedgerController extends Controller
         $ledger->update($data);
 
         return [
-            'data' => [
-                'message' => 'Ledger updated!'
-            ]
+            'message' => 'Ledger updated!'
         ];
     }
 
@@ -60,9 +58,7 @@ class LedgerController extends Controller
         $ledger->delete();
 
         return [
-            'data' => [
-                'message' => 'Ledger deleted!'
-            ]
+            'message' => 'Ledger deleted!'
         ];
     }
 }

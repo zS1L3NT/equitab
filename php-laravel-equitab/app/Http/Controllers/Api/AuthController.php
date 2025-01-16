@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,8 +26,8 @@ class AuthController extends Controller
         }
 
         return [
+            'message' => 'Logged in successfully.',
             'data' => [
-                'message' => 'Logged in successfully.',
                 'token' => auth()->user()->createToken($request->device_name . " @ " . $request->ip())->plainTextToken,
             ]
         ];
@@ -39,9 +38,7 @@ class AuthController extends Controller
         auth()->user()->tokens()->delete();
 
         return [
-            'data' => [
-                'message' => 'Logged out successfully.'
-            ]
+            'message' => 'Logged out successfully.'
         ];
     }
 }
