@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Ledger;
 use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,12 +21,7 @@ class EnsureBelongsToLedger
         $ledger = $request->route('ledger');
 
         if ($ledger && !$ledger->users()->where('users.id', auth()->id())->exists()) {
-            return response([
-                'error' => [
-                    'type' => 'Authorization Error',
-                    'message' => 'You have no permission to access data from this ledger.'
-                ]
-            ], Response::HTTP_FORBIDDEN);
+            throw new ModelNotFoundException()->setModel(Ledger::class);
         }
 
         return $next($request);

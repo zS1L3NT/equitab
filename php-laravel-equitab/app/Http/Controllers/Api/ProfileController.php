@@ -8,11 +8,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class UserController extends Controller
+class ProfileController extends Controller
 {
     public function show(): array
     {
-        return ['data' => new UserResource(auth()->user())];
+        return [
+            'data' => new UserResource(auth()->user())
+        ];
     }
 
     public function update(Request $request): array
@@ -35,9 +37,7 @@ class UserController extends Controller
         $user->update($data);
 
         return [
-            'data' => [
-                'message' => 'User updated successfully',
-            ]
+            'message' => 'Profile updated successfully'
         ];
     }
 }

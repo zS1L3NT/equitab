@@ -8,7 +8,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('auth/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
 
-        Route::singleton('user', \App\Http\Controllers\Api\UserController::class)->except('edit');
+        Route::singleton('profile', \App\Http\Controllers\Api\ProfileController::class)->except('edit');
 
         Route::group(['prefix' => 'friends/requests'], function() {
             Route::get('/', [\App\Http\Controllers\Api\FriendRequestController::class, 'index']);

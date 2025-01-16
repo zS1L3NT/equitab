@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use DB;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FriendController extends Controller
 {
@@ -15,17 +15,15 @@ class FriendController extends Controller
         return UserResource::collection(auth()->user()->friends()->paginate());
     }
 
-    public function show(User $friend) {
+    public function show(User $friend)
+    {
         if (!auth()->user()->friends()->where('users.id', $friend->id)->exists()) {
-            return response([
-                'error' => [
-                    'type' => 'Not friends',
-                    'message' => 'You aren\'t friends with this user.'
-                ]
-            ], Response::HTTP_FORBIDDEN);
+            throw new ModelNotFoundException()->setModel(User::class);
         }
 
-        return ['data' => new UserResource($friend)];
+        return [
+            'data' => new UserResource($friend)
+        ];
     }
 
     public function destroy(User $friend)
@@ -33,13 +31,8 @@ class FriendController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if (!$user->friends()->where('users.id', $friend->id)->exists()) {
-            return response([
-                'error' => [
-                    'type' => 'Not friends',
-                    'message' => 'You aren\'t even friends in the first place!'
-                ]
-            ], Response::HTTP_BAD_REQUEST);
+        if (!$user->friends()->where('users.id', operator: $friend->id)->exists()) {
+            throw new ModelNotFoundException()->setModel(User::class);
         }
 
         DB::transaction(function () use ($user, $friend) {
@@ -48,9 +41,7 @@ class FriendController extends Controller
         });
 
         return [
-            'data' => [
-                'message' => 'Friend removed.'
-            ]
+            'message' => 'Friend removed.'
         ];
     }
 }
