@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LedgerResource;
 use App\Models\Ledger;
+use App\Rules\IsMyFriend;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,10 +22,11 @@ class LedgerController extends Controller
             'name' => 'required|string',
             'currency' => 'required', // TODO get full list of currencies
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'user_ids' => 'required|array|min:1',
+            'user_ids.*' => ['required', 'integer', new IsMyFriend]
         ]);
 
-        $ledger = Ledger::create($data);
-        $ledger->users()->attach(auth()->user());
+        Ledger::create($data);
 
         return response([
             'message' => 'Ledger created!'
@@ -46,6 +48,8 @@ class LedgerController extends Controller
             'name' => 'string',
             'currency' => 'prohibited', // TODO update currency logic
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'user_ids' => 'array|min:1',
+            'user_ids.*' => ['integer', new IsMyFriend]
         ]);
 
         $ledger->update($data);

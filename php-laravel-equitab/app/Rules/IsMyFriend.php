@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsLedgerUser implements ValidationRule
+class IsMyFriend implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -14,15 +14,15 @@ class IsLedgerUser implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        /** @var \App\Models\Ledger $ledger */
-        $ledger = request()->route('ledger');
+        /** @var \App\Models\User $user*/
+        $user = auth()->user();
 
-        if (!$ledger) {
+        if (!$user) {
             abort(500);
         }
 
-        if ($ledger->users()->where('users.id', $value)->doesntExist()) {
-            $fail('This user either doesn\'t exist or doesn\'t have permission to access this ledger.');
+        if ($user->id != $value && $user->friends()->where('friend_id', $value)->doesntExist()) {
+            $fail('This user either doesn\'t exist or isn\'t one of your friends.');
         }
     }
 }
