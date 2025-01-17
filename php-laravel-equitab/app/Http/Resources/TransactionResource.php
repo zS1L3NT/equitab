@@ -26,7 +26,7 @@ class TransactionResource extends JsonResource
             'currency' => $this->currency,
             'rate' => $this->rate,
             'ledger' => new LedgerResource($this->whenLoaded('ledger')),
-            // 'products' => 
+            'products' => ProductResource::collection($this->whenLoaded('products')),
         ];
     }
 }
