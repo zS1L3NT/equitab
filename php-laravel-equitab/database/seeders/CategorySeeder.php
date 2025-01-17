@@ -14,17 +14,17 @@ class CategorySeeder extends Seeder
     {
         Category::query()->create([
             'name' => 'Food',
-            'picture_path' => fake()->imageUrl(500, 500, 'food'),
+            'picture' => fake()->imageUrl(500, 500, 'food'),
         ]);
 
         Category::query()->create([
             'name' => 'Transport',
-            'picture_path' => fake()->imageUrl(500, 500, 'transport'),
+            'picture' => fake()->imageUrl(500, 500, 'transport'),
         ]);
 
         Category::query()->create([
             'name' => 'Accomodation',
-            'picture_path' => fake()->imageUrl(500, 500, 'accomodation'),
+            'picture' => fake()->imageUrl(500, 500, 'accomodation'),
         ]);
     }
 }

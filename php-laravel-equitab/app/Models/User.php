@@ -16,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $username
  * @property string $phone_number
  * @property Carbon|null $phone_number_verified_at
- * @property string|null $picture_path
+ * @property string|null $picture
  * @property string $password
  *
  * @property Collection<User> $friends
@@ -31,7 +31,7 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'phone_number',
-        'picture_path',
+        'picture',
         'password',
     ];
 
@@ -46,14 +46,14 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function getPicturePathAttribute(): string|null
+    public function getPictureAttribute(): string|null
     {
-        return $this->attributes['picture_path'] ? asset($this->attributes['picture_path']) : null;
+        return $this->attributes['picture'] ? asset($this->attributes['picture']) : null;
     }
 
-    public function setPictureFileAttribute(string|UploadedFile $picture): void
+    public function setPictureAttribute(string|UploadedFile $picture): void
     {
-        $this->attributes['picture_path'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/users/' . $this->username . '.png') : $picture;
+        $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/users/' . $this->username . '.png') : $picture;
     }
 
     public function friends(): BelongsToMany

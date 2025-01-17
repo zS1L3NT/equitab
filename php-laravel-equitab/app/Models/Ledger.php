@@ -14,7 +14,7 @@ class Ledger extends Model
     protected $fillable = [
         'name',
         'currency',
-        'picture_path',
+        'picture',
     ];
 
     public function getSummaryAttribute() {
@@ -22,14 +22,14 @@ class Ledger extends Model
         return 'Summary...';
     }
     
-    public function getPicturePathAttribute(): string|null
+    public function getPictureAttribute(): string|null
     {
-        return $this->attributes['picture_path'] ? asset($this->attributes['picture_path']) : null;
+        return $this->attributes['picture'] ? asset($this->attributes['picture']) : null;
     }
 
-    public function setPictureFileAttribute(string|UploadedFile $picture): void
+    public function setPictureAttribute(string|UploadedFile $picture): void
     {
-        $this->attributes['picture_path'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/ledgers/' . $this->id . '.png') : $picture;
+        $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/ledgers/' . $this->id . '.png') : $picture;
     }
 
     public function users() {
