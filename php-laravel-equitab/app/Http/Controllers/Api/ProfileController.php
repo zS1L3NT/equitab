@@ -25,7 +25,7 @@ class ProfileController extends Controller
         $data = $request->validate([
             'username' => Rule::unique('users')->ignore($user),
             'phone_number' => "regex:/^\+\d{1,14}$/|" . Rule::unique('users')->ignore($user),
-            'picture_file' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
             'password' => 'min:8|confirmed',
         ]);
 

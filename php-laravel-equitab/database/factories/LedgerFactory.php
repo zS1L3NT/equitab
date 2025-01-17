@@ -20,7 +20,7 @@ class LedgerFactory extends Factory
 
         return [
             'name' => fake()->words(fake()->numberBetween(3, 5), true),
-            'picture_path' => fake()->boolean() ? fake()->imageUrl(500, 500) : null,
+            'picture' => fake()->boolean() ? fake()->imageUrl(500, 500) : null,
             'currency' => fake()->currencyCode(),
             'created_at' => $date,
             'updated_at' => $date

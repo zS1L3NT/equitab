@@ -18,7 +18,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'username' => $this->username,
             'phone_number' => $this->phone_number_verified_at ? $this->phone_number : null,
-            'picture_path' => $this->picture_path,
+            'picture' => $this->picture,
         ];
     }
 }

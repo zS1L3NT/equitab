@@ -25,7 +25,7 @@ class UserFactory extends Factory
             'username' => $this->faker->userName(),
             'phone_number' => '+65' . fake()->numberBetween(8, 9) . fake()->numberBetween(1000000, 9999999),
             'phone_number_verified_at' => fake()->boolean() ? fake()->dateTimeBetween($date, 'now') : null,
-            'picture_path' => fake()->boolean() ? fake()->imageUrl(500, 500) : null,
+            'picture' => fake()->boolean() ? fake()->imageUrl(500, 500) : null,
             'password' => static::$password,
             'created_at' => $date,
             'updated_at' => $date

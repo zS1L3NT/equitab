@@ -19,7 +19,7 @@ class LedgerResource extends JsonResource
             'name' => $this->name,
             'summary' => $this->summary,
             'currency' => $this->currency,
-            'picture_path' => $this->picture_path,
+            'picture' => $this->picture,
             'users' => UserResource::collection($this->whenLoaded('users')),
         ];
     }

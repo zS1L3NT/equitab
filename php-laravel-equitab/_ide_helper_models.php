@@ -17,13 +17,13 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $name
- * @property string $picture_path
+ * @property string $picture
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category wherePicturePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category wherePicture($value)
  */
 	class Category extends \Eloquent {}
 }
@@ -34,12 +34,11 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $name
- * @property string|null $picture_path
+ * @property string|null $picture
  * @property string $currency
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $summary
- * @property-write mixed $picture_file
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
  * @property-read int|null $transactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
@@ -52,7 +51,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereCurrency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger wherePicturePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger wherePicture($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereUpdatedAt($value)
  */
 	class Ledger extends \Eloquent {}
@@ -133,7 +132,7 @@ namespace App\Models{
  * @property string $username
  * @property string $phone_number
  * @property Carbon|null $phone_number_verified_at
- * @property string|null $picture_path
+ * @property string|null $picture
  * @property string $password
  * @property Collection<User> $friends
  * @property Collection<User> $outgoing_friends
@@ -150,7 +149,6 @@ namespace App\Models{
  * @property-read int|null $outgoing_friends_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
- * @property-write mixed $picture_file
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
@@ -164,7 +162,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhoneNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhoneNumberVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePicturePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePicture($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)

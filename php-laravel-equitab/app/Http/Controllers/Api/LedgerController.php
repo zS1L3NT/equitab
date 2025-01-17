@@ -20,7 +20,7 @@ class LedgerController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'currency' => 'required', // TODO get full list of currencies
-            'picture_file' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $ledger = Ledger::create($data);
@@ -45,7 +45,7 @@ class LedgerController extends Controller
         $data = $request->validate([
             'name' => 'string',
             'currency' => 'prohibited', // TODO update currency logic
-            'picture_file' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $ledger->update($data);
