@@ -25,7 +25,9 @@ class TransactionController extends Controller
             'location' => 'string',
             'datetime' => 'required|date',
             'category_id' => 'required|exists:categories,id',
-            'payer_id' => ['required', new IsLedgerUser],
+            'payer_id' => ['required', 'integer',new IsLedgerUser],
+            'ower_ids' => 'required|array|min:1',
+            'ower_ids.*' => ['required', 'integer', new IsLedgerUser],
         ]);
 
         $ledger->transactions()->create($data);
@@ -52,7 +54,9 @@ class TransactionController extends Controller
             'location' => 'string',
             'datetime' => 'date',
             'category_id' => 'exists:categories,id',
-            'payer_id' => new IsLedgerUser
+            'payer_id' => ['integer', new IsLedgerUser],
+            'ower_ids' => 'array|min:1',
+            'ower_ids.*' => ['integer', new IsLedgerUser],
         ]);
 
         $transaction->update($data);
