@@ -15,6 +15,7 @@ class Ledger extends Model
         'name',
         'currency',
         'picture',
+        'user_ids'
     ];
 
     public function getSummaryAttribute() {
@@ -30,6 +31,10 @@ class Ledger extends Model
     public function setPictureAttribute(string|UploadedFile $picture): void
     {
         $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/ledgers/' . $this->id . '.png') : $picture;
+    }
+
+    public function setUserIdsAttribute(array $userIds) {
+        $this->users()->sync($userIds);
     }
 
     public function users() {
