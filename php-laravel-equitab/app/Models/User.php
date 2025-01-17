@@ -51,7 +51,7 @@ class User extends Authenticatable
         return $this->attributes['picture'] ? asset($this->attributes['picture']) : null;
     }
 
-    public function setPictureAttribute(string|UploadedFile $picture): void
+    public function setPictureAttribute(UploadedFile|string|null $picture): void
     {
         $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/users/' . $this->username . '.png') : $picture;
     }
