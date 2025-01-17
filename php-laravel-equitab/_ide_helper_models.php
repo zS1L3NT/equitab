@@ -32,6 +32,23 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $code
+ * @property string $name
+ * @property string $symbol
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency whereSymbol($value)
+ */
+	class Currency extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property string $name
  * @property string|null $picture
