@@ -17,6 +17,7 @@ class Transaction extends Model
         'datetime',
         'category_id',
         'payer_id',
+        'ower_ids'
     ];
 
     protected $with = [
@@ -28,6 +29,10 @@ class Transaction extends Model
     protected $casts = [
         'datetime' => 'datetime:c'
     ];
+
+    public function setOwerIdsAttribute(array $owerIds) {
+        $this->owers()->sync($owerIds);
+    }
 
     public function payer() {
         return $this->belongsTo(User::class);
