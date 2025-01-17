@@ -12,13 +12,11 @@ class Transaction extends Model
 
     protected $fillable = [
         'name',
+        'cost',
         'location',
         'datetime',
         'category_id',
         'payer_id',
-        'cost',
-        'currency',
-        'rate',
     ];
 
     protected $with = [

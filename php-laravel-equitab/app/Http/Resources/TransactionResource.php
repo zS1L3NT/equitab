@@ -17,14 +17,12 @@ class TransactionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'cost' => $this->cost,
             'location' => $this->location,
             'datetime' => $this->datetime,
             'category' => $this->category,
             'payer' => new UserResource($this->payer),
             'owers' => UserResource::collection($this->owers),
-            'cost' => $this->cost,
-            'currency' => $this->currency,
-            'rate' => $this->rate,
             'ledger' => new LedgerResource($this->whenLoaded('ledger')),
             'products' => ProductResource::collection($this->whenLoaded('products')),
         ];

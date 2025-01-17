@@ -98,8 +98,6 @@ namespace App\Models{
  * @property int|null $category_id
  * @property int $payer_id
  * @property string $cost
- * @property string $currency
- * @property string $rate
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Category|null $category
@@ -116,14 +114,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereCost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereCurrency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereDatetime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereLedgerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction wherePayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereUpdatedAt($value)
  */
 	class Transaction extends \Eloquent {}

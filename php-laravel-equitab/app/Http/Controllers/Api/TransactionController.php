@@ -20,13 +20,11 @@ class TransactionController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string',
+            'cost' => 'required|decimal:0,4',
             'location' => 'string',
             'datetime' => 'required|date',
             'category_id' => 'required|exists:categories,id',
             'payer_id' => ['required', fn($p, $v, $f) => $ledger->users()->where('users.id', $v)->exists() ? null : $f('This user either doesn\'t exist or doesn\'t have permission to access this ledger.')],
-            'cost' => 'required|decimal:0,4',
-            'currency' => 'required|string', // TODO check valid currency
-            'rate' => 'required|decimal:0,6',
         ]);
 
         $ledger->transactions()->create($data);
@@ -49,13 +47,11 @@ class TransactionController extends Controller
     {
         $data = $request->validate([
             'name' => 'string',
+            'cost' => 'decimal:0,4',
             'location' => 'string',
             'datetime' => 'date',
             'category_id' => 'exists:categories,id',
             'payer_id' => fn($p, $v, $f) => $ledger->users()->where('users.id', $v)->exists() ? null : $f('This user either doesn\'t exist or doesn\'t have permission to access this ledger.'),
-            'cost' => 'decimal:0,4',
-            'currency' => 'string', // TODO check valid currency
-            'rate' => 'decimal:0,6',
         ]);
 
         $transaction->update($data);
