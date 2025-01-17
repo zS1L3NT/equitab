@@ -33,6 +33,8 @@ class LedgerController extends Controller
 
     public function show(Ledger $ledger)
     {
+        $ledger->load('users');
+
         return [
             'data' => new LedgerResource($ledger)
         ];

@@ -17,7 +17,7 @@ class Ledger extends Model
         'picture_path',
     ];
 
-    public function getDescriptionAttribute() {
+    public function getSummaryAttribute() {
         // TODO Summarise the ledger for the current user
         return 'Summary...';
     }
@@ -37,6 +37,6 @@ class Ledger extends Model
     }
 
     public function transactions() {
-        return $this->hasMany(related: Transaction::class);
+        return $this->hasMany(Transaction::class);
     }
 }
