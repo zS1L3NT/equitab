@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Models\Ledger;
 use App\Models\Transaction;
+use App\Rules\IsLedgerUser;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,7 +25,7 @@ class TransactionController extends Controller
             'location' => 'string',
             'datetime' => 'required|date',
             'category_id' => 'required|exists:categories,id',
-            'payer_id' => ['required', fn($p, $v, $f) => $ledger->users()->where('users.id', $v)->exists() ? null : $f('This user either doesn\'t exist or doesn\'t have permission to access this ledger.')],
+            'payer_id' => ['required', new IsLedgerUser],
         ]);
 
         $ledger->transactions()->create($data);
@@ -51,7 +52,7 @@ class TransactionController extends Controller
             'location' => 'string',
             'datetime' => 'date',
             'category_id' => 'exists:categories,id',
-            'payer_id' => fn($p, $v, $f) => $ledger->users()->where('users.id', $v)->exists() ? null : $f('This user either doesn\'t exist or doesn\'t have permission to access this ledger.'),
+            'payer_id' => new IsLedgerUser
         ]);
 
         $transaction->update($data);

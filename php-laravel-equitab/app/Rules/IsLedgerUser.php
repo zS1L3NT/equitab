@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Rules;
+
+use App\Models\Ledger;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
+
+class IsLedgerUser implements ValidationRule
+{
+    /**
+     * Run the validation rule.
+     *
+     * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     */
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        /** @var Ledger $ledger */
+        $ledger = request()->route('ledger');
+
+        if (!$ledger) {
+            abort(500);
+        }
+
+        if ($ledger->users()->where('users.id', $value)->doesntExist()) {
+            $fail('This user either doesn\'t exist or doesn\'t have permission to access this ledger.');
+        }
+    }
+}
