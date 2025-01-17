@@ -20,6 +20,10 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::group(['middleware' => [\App\Http\Middleware\EnsureBelongsToLedger::class]], function() {
             Route::apiResource('ledgers', \App\Http\Controllers\Api\LedgerController::class);
+
+            Route::apiResource('ledgers.transactions', \App\Http\Controllers\Api\TransactionController::class)->scoped();
         });
     });
+
+    Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class)->only('index');
 });

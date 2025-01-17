@@ -38,7 +38,7 @@ namespace App\Models{
  * @property string $currency
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $description
+ * @property-read mixed $summary
  * @property-write mixed $picture_file
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
  * @property-read int|null $transactions_count
@@ -94,7 +94,7 @@ namespace App\Models{
  * @property int $ledger_id
  * @property string $name
  * @property string|null $location
- * @property string $datetime
+ * @property \Illuminate\Support\Carbon $datetime
  * @property int|null $category_id
  * @property int $payer_id
  * @property string $cost

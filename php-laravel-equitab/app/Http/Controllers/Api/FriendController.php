@@ -17,7 +17,7 @@ class FriendController extends Controller
 
     public function show(User $friend)
     {
-        if (!auth()->user()->friends()->where('users.id', $friend->id)->exists()) {
+        if (auth()->user()->friends()->where('users.id', $friend->id)->doesntExist()) {
             throw new ModelNotFoundException()->setModel(User::class);
         }
 
@@ -31,7 +31,7 @@ class FriendController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if (!$user->friends()->where('users.id', operator: $friend->id)->exists()) {
+        if ($user->friends()->where('users.id', $friend->id)->doesntExist()) {
             throw new ModelNotFoundException()->setModel(User::class);
         }
 

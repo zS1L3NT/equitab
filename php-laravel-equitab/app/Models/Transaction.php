@@ -10,6 +10,27 @@ class Transaction extends Model
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'location',
+        'datetime',
+        'category_id',
+        'payer_id',
+        'cost',
+        'currency',
+        'rate',
+    ];
+
+    protected $with = [
+        'payer',
+        'owers',
+        'category',
+    ];
+
+    protected $casts = [
+        'datetime' => 'datetime:c'
+    ];
+
     public function payer() {
         return $this->belongsTo(User::class);
     }
@@ -27,6 +48,6 @@ class Transaction extends Model
     }
 
     public function products() {
-        return $this->hasMany(related: Product::class);
+        return $this->hasMany(Product::class);
     }
 }
