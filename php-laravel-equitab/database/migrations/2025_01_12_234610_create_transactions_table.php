@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Ledger::class)->constrained();
+            $table->foreignIdFor(\App\Models\Ledger::class)->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('location')->nullable();
             $table->dateTime('datetime');
             $table->foreignIdFor(\App\Models\Category::class)->nullable()->constrained();
-            $table->foreignIdFor(\App\Models\User::class, 'payer_id')->constrained();
+            $table->foreignIdFor(\App\Models\User::class, 'payer_id')->constrained()->cascadeOnDelete();
             $table->decimal('cost', 12, 4);
             $table->string('currency', 3);
             $table->decimal('rate', 10, 6)->default(1);

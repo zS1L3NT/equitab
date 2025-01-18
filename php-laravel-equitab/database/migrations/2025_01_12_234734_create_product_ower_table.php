@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_ower', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\Product::class)->constrained();
-            $table->foreignIdFor(\App\Models\User::class, 'ower_id')->constrained();
+            $table->foreignIdFor(\App\Models\Product::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\User::class, 'ower_id')->constrained()->cascadeOnDelete();
 
             $table->unique(['product_id', 'ower_id']);
         });

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('friend_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class, 'from_user_id')->constrained();
-            $table->foreignIdFor(\App\Models\User::class, 'to_user_id')->constrained();
+            $table->foreignIdFor(\App\Models\User::class, 'from_user_id')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\User::class, 'to_user_id')->constrained()->cascadeOnDelete();
             $table->timestamp('created_at')->useCurrent();
 
             $table->unique(['from_user_id', 'to_user_id']);

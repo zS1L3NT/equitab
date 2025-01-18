@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaction_ower', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\Transaction::class)->constrained();
-            $table->foreignIdFor(\App\Models\User::class, 'ower_id')->constrained();
+            $table->foreignIdFor(\App\Models\Transaction::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\User::class, 'ower_id')->constrained()->cascadeOnDelete();
 
             $table->unique(['transaction_id', 'ower_id']);
         });
