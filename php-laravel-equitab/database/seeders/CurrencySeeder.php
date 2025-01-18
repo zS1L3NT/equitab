@@ -16,7 +16,7 @@ class CurrencySeeder extends Seeder
         
         $file = file_get_contents(storage_path('app/currencies.json'));
         $currencies = array_values(json_decode($file, true));
-        $currencies = array_map(fn($c) => collect($c)->only(['code', 'name', 'symbol'])->toArray(), $currencies);
+        $currencies = array_map(fn($c) => ['code' => $c['code'], 'name' => $c['name'], 'symbol' => $c['symbol_native']], $currencies);
 
         Currency::insert($currencies);
     }
