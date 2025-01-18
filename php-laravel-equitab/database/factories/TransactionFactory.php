@@ -23,7 +23,7 @@ class TransactionFactory extends Factory
         return [
             'ledger_id' => Ledger::factory(),
             'name' => fake()->words(fake()->numberBetween(5, 10), true),
-            'cost' => fake()->numberBetween(100, 10000) / 100,
+            'cost' => fake()->numberBetween(100_000, 1_000_000) / 100,
             'location' => fake()->boolean() ? fake()->address() : null,
             'datetime' => $date,
             'category_id' => Category::inRandomOrder()->first()->id,

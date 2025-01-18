@@ -22,6 +22,14 @@ class ProductSeeder extends Seeder
                 $count = fake()->numberBetween(self::PRODUCTS_MIN, self::PRODUCTS_MAX);
                 Product::factory()->count($count)->for($transaction)->create();
 
+                $remaining = $transaction->cost - $transaction->products->sum(fn($p) => $p->quantity * $p->cost);
+                $transaction->products()->create([
+                    'name' => 'equalizer',
+                    'index' => $transaction->products->count(),
+                    'quantity' => 1,
+                    'cost' => $remaining
+                ]);
+
                 foreach ($transaction->products as $index => $product) {
                     $product->update(compact('index'));
 

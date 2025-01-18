@@ -22,7 +22,7 @@ class ProductFactory extends Factory
             'name' => fake()->words(fake()->numberBetween(2, 4), true),
             'index' => -1,
             'quantity' => fake()->numberBetween(1, 3),
-            'cost' => fake()->numberBetween(1, 10)
+            'cost' => fake()->numberBetween(1, 1000) / 100
         ];
     }
 }
