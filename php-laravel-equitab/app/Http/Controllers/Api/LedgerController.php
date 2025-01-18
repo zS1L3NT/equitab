@@ -20,7 +20,7 @@ class LedgerController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string',
-            'currency' => 'required', // TODO get full list of currencies
+            'currency_code' => 'required|exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
             'user_ids' => 'required|array|min:1',
             'user_ids.*' => ['required', 'integer', new IsMyFriend]
@@ -46,7 +46,7 @@ class LedgerController extends Controller
     {
         $data = $request->validate([
             'name' => 'string',
-            'currency' => 'prohibited', // TODO update currency logic
+            'currency_code' => 'exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
             'user_ids' => 'array|min:1',
             'user_ids.*' => ['integer', new IsMyFriend]

@@ -13,8 +13,8 @@ class Ledger extends Model
 
     protected $fillable = [
         'name',
-        'currency',
         'picture',
+        'currency_code',
         'user_ids'
     ];
 
@@ -35,6 +35,10 @@ class Ledger extends Model
 
     public function setUserIdsAttribute(array $userIds) {
         $this->users()->sync($userIds);
+    }
+
+    public function currency() {
+        return $this->belongsTo(Currency::class);
     }
 
     public function users() {

@@ -14,11 +14,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             FriendshipSeeder::class,
+            CurrencySeeder::class,
             CategorySeeder::class,
             LedgerSeeder::class,
             TransactionSeeder::class,
             ProductSeeder::class,
-            CurrencySeeder::class,
         ]);
     }
 }
