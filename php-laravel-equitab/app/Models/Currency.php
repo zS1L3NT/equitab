@@ -8,4 +8,5 @@ class Currency extends Model
 {
     public $timestamps = false;
     protected $primaryKey = 'code';
+    public $incrementing = false;
 }

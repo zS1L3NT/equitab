@@ -32,7 +32,7 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $code
+ * @property string $code
  * @property string $name
  * @property string $symbol
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newModelQuery()
@@ -52,9 +52,10 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property string|null $picture
- * @property string $currency
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $currency_code
+ * @property-read \App\Models\Currency $currency
  * @property-read mixed $summary
  * @property-write mixed $user_ids
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
@@ -66,7 +67,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereCurrency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereCurrencyCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger wherePicture($value)

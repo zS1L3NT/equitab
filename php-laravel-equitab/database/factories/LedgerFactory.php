@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Currency;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,7 @@ class LedgerFactory extends Factory
         return [
             'name' => fake()->words(fake()->numberBetween(3, 5), true),
             'picture' => fake()->boolean() ? fake()->imageUrl(500, 500) : null,
-            'currency' => fake()->currencyCode(),
+            'currency_code' => Currency::inRandomOrder()->first()->code,
             'created_at' => $date,
             'updated_at' => $date
         ];
