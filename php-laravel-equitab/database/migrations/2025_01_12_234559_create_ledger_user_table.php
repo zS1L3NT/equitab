@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ledger_user', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\Ledger::class)->constrained();
-            $table->foreignIdFor(\App\Models\User::class)->constrained();
+            $table->foreignIdFor(\App\Models\Ledger::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
             $table->timestamp('created_at')->useCurrent();
 
             $table->unique(['ledger_id', 'user_id']);

@@ -11,8 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('friendships', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\User::class, 'user_id')->constrained();
-            $table->foreignIdFor(\App\Models\User::class, 'friend_id')->constrained();
+            $table->foreignIdFor(\App\Models\User::class, 'user_id')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\User::class, 'friend_id')->constrained()->cascadeOnDelete();
             $table->timestamp('created_at')->useCurrent();
 
             $table->unique(['user_id', 'friend_id']);
