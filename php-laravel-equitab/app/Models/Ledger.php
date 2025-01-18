@@ -18,11 +18,12 @@ class Ledger extends Model
         'user_ids'
     ];
 
-    public function getSummaryAttribute() {
+    public function getSummaryAttribute()
+    {
         // TODO Summarise the ledger for the current user
         return 'Summary...';
     }
-    
+
     public function getPictureAttribute(): string|null
     {
         return $this->attributes['picture'] ? asset($this->attributes['picture']) : null;
@@ -33,21 +34,25 @@ class Ledger extends Model
         $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/ledgers/' . $this->id . '.png') : $picture;
     }
 
-    public function setUserIdsAttribute(array $userIds) {
+    public function setUserIdsAttribute(array $userIds)
+    {
         if ($this->id) {
             $this->users()->sync($userIds);
         }
     }
 
-    public function currency() {
+    public function currency()
+    {
         return $this->belongsTo(Currency::class);
     }
 
-    public function users() {
+    public function users()
+    {
         return $this->belongsToMany(User::class);
     }
 
-    public function transactions() {
+    public function transactions()
+    {
         return $this->hasMany(Transaction::class);
     }
 }
