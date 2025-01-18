@@ -30,29 +30,35 @@ class Transaction extends Model
         'datetime' => 'datetime:c'
     ];
 
-    public function setOwerIdsAttribute(array $owerIds) {
+    public function setOwerIdsAttribute(array $owerIds)
+    {
         if ($this->id) {
             $this->owers()->sync($owerIds);
         }
     }
 
-    public function payer() {
+    public function payer()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function owers() {
+    public function owers()
+    {
         return $this->belongsToMany(User::class, 'transaction_ower', 'transaction_id', 'ower_id');
     }
 
-    public function ledger() {
+    public function ledger()
+    {
         return $this->belongsTo(Ledger::class);
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function products() {
+    public function products()
+    {
         return $this->hasMany(Product::class)->orderBy('index');
     }
 }

@@ -71,15 +71,18 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'friend_requests', 'to_user_id', 'from_user_id');
     }
 
-    public function ledgers() {
+    public function ledgers()
+    {
         return $this->belongsToMany(Ledger::class);
     }
 
-    public function transactions() {
+    public function transactions()
+    {
         return $this->hasMany(Transaction::class, 'ower_id');
     }
 
-    public function products() {
+    public function products()
+    {
         return $this->hasMany(Product::class, 'ower_id');
     }
 }

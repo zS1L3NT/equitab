@@ -24,21 +24,25 @@ class Product extends Model
         'owers',
     ];
 
-    public function setOwerIdsAttribute(array $owerIds) {
+    public function setOwerIdsAttribute(array $owerIds)
+    {
         if ($this->id) {
             $this->owers()->sync($owerIds);
         }
     }
 
-    public function owers() {
+    public function owers()
+    {
         return $this->belongsToMany(User::class, 'product_ower', 'product_id', 'ower_id');
     }
 
-    public function transaction() {
+    public function transaction()
+    {
         return $this->belongsTo(Transaction::class);
     }
 
-    public function ledger() {
+    public function ledger()
+    {
         return $this->belongsToThrough(Ledger::class, Transaction::class);
     }
 }

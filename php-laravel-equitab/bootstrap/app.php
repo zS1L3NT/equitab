@@ -14,9 +14,9 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        api: __DIR__ . '/../routes/api.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -44,7 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ], Response::HTTP_UNAUTHORIZED);
         });
 
-        $exceptions->render(function (NotFoundHttpException | RouteNotFoundException $e) {
+        $exceptions->render(function (NotFoundHttpException|RouteNotFoundException $e) {
             $pe = $e->getPrevious();
             if ($pe instanceof ModelNotFoundException) {
                 $model = substr($pe->getModel(), 11);

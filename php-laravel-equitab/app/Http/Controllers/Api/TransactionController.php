@@ -25,7 +25,7 @@ class TransactionController extends Controller
             'location' => 'string',
             'datetime' => 'required|date',
             'category_id' => 'required|exists:categories,id',
-            'payer_id' => ['required', 'integer',new IsLedgerUser],
+            'payer_id' => ['required', 'integer', new IsLedgerUser],
             'ower_ids' => 'required|array|min:1',
             'ower_ids.*' => ['required', 'integer', new IsLedgerUser],
         ]);
@@ -62,7 +62,7 @@ class TransactionController extends Controller
         $transaction->update($data);
 
         return [
-            'message'=> 'Transaction updated.',
+            'message' => 'Transaction updated.',
         ];
     }
 

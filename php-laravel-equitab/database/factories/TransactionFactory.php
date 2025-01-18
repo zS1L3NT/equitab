@@ -27,7 +27,7 @@ class TransactionFactory extends Factory
             'location' => fake()->boolean() ? fake()->address() : null,
             'datetime' => $date,
             'category_id' => Category::inRandomOrder()->first()->id,
-            'payer_id' => fn ($attributes) => Ledger::find($attributes['ledger_id'])->users()->inRandomOrder()->first()->id,
+            'payer_id' => fn($attributes) => Ledger::find($attributes['ledger_id'])->users()->inRandomOrder()->first()->id,
             'created_at' => $date,
             'updated_at' => $date,
         ];

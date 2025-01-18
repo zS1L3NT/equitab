@@ -60,7 +60,7 @@ class ProductController extends Controller
         $product->update($data);
 
         return [
-            'message'=> 'Product updated.',
+            'message' => 'Product updated.',
         ];
     }
 
