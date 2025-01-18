@@ -88,6 +88,7 @@ namespace App\Models{
  * @property string $cost
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $owers
  * @property-read int|null $owers_count
+ * @property-write mixed $ower_ids
  * @property-read \App\Models\Transaction $transaction
  * @property-read \App\Models\Ledger|null $ledger
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])

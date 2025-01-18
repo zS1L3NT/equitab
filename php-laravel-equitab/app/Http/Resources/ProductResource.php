@@ -20,6 +20,7 @@ class ProductResource extends JsonResource
             'index' => $this->index,
             'quantity' => $this->quantity,
             'cost' => $this->cost,
+            'owers' => UserResource::collection($this->owers),
             'transaction' => new TransactionResource($this->whenLoaded('transaction')),
         ];
     }

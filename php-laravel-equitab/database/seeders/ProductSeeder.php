@@ -20,7 +20,10 @@ class ProductSeeder extends Seeder
         foreach (Transaction::all() as $transaction) {
             if (fake()->boolean() && fake()->boolean()) {
                 $count = fake()->numberBetween(self::PRODUCTS_MIN, self::PRODUCTS_MAX);
-                Product::factory()->count($count)->for($transaction)->create();
+
+                for ($i = 0; $i < $count; $i++) {
+                    Product::factory()->for($transaction)->create();
+                }
 
                 $remaining = $transaction->cost - $transaction->products->sum(fn($p) => $p->quantity * $p->cost);
                 $transaction->products()->create([
@@ -30,9 +33,7 @@ class ProductSeeder extends Seeder
                     'cost' => $remaining
                 ]);
 
-                foreach ($transaction->products as $index => $product) {
-                    $product->update(compact('index'));
-
+                foreach ($transaction->products as $product) {
                     $count = fake()->numberBetween(static::TRANSACTION_OWERS_MIN, $transaction->owers->count());
                     $product->owers()->attach($transaction->owers->random($count));
                 }

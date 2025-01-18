@@ -34,7 +34,9 @@ class Ledger extends Model
     }
 
     public function setUserIdsAttribute(array $userIds) {
-        $this->users()->sync($userIds);
+        if ($this->id) {
+            $this->users()->sync($userIds);
+        }
     }
 
     public function currency() {

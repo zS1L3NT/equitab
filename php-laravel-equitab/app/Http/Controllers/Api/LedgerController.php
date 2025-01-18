@@ -26,7 +26,7 @@ class LedgerController extends Controller
             'user_ids.*' => ['required', 'integer', new IsMyFriend]
         ]);
 
-        Ledger::create($data);
+        Ledger::create($data)->users()->sync($data['user_ids']);
 
         return response([
             'message' => 'Ledger created!'
