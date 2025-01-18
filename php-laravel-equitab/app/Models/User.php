@@ -2,25 +2,43 @@
 
 namespace App\Models;
 
-use App\Enums\FriendshipStatus;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
+use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property int $id
+ * @property string $username
+ * @property string $phone_number
+ * @property Carbon|null $phone_number_verified_at
+ * @property string|null $picture
+ * @property string $password
+ *
+ * @property Collection<User> $friends
+ * @property Collection<User> $outgoing_friends
+ * @property Collection<User> $incoming_friends
+ */
 class User extends Authenticatable
 {
-    use Notifiable;
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use Notifiable, HasApiTokens, HasFactory;
 
     protected $fillable = [
         'username',
         'phone_number',
-        'picture_path',
+        'picture',
         'password',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'pivot'
     ];
 
     protected $casts = [
@@ -28,10 +46,43 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function friendships(): HasMany
+    public function getPictureAttribute(): string|null
     {
-        $sent = $this->hasMany(Friendship::class, 'to_user_id');
-        $received = $this->hasMany(Friendship::class, 'from_user_id');
-        return $sent->union($received)->latest();
+        return $this->attributes['picture'] ? asset($this->attributes['picture']) : null;
+    }
+
+    public function setPictureAttribute(UploadedFile|string|null $picture): void
+    {
+        $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/users/' . $this->username . '.png') : $picture;
+    }
+
+    public function friends(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id');
+    }
+
+    public function outgoing_friends(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friend_requests', 'from_user_id', 'to_user_id');
+    }
+
+    public function incoming_friends(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friend_requests', 'to_user_id', 'from_user_id');
+    }
+
+    public function ledgers()
+    {
+        return $this->belongsToMany(Ledger::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'ower_id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'ower_id');
     }
 }
