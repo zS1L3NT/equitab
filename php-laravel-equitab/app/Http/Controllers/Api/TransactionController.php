@@ -33,7 +33,7 @@ class TransactionController extends Controller
         $ledger->transactions()->create($data)->owers()->sync($data['ower_ids']);
 
         return response([
-            'message' => 'Transaction created!'
+            'message' => 'Transaction created.'
         ], Response::HTTP_CREATED);
     }
 
@@ -71,7 +71,7 @@ class TransactionController extends Controller
         $transaction->delete();
 
         return [
-            'message' => 'Transaction deleted!'
+            'message' => 'Transaction deleted.'
         ];
     }
 }

@@ -33,7 +33,7 @@ class ProductController extends Controller
         $transaction->products()->create($data)->owers()->sync($data['ower_ids']);
 
         return response([
-            'message' => 'Product created!'
+            'message' => 'Product created.'
         ], Response::HTTP_CREATED);
     }
 

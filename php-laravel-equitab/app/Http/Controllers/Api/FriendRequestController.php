@@ -29,7 +29,7 @@ class FriendRequestController extends Controller
             return response([
                 'error' => [
                     'type' => 'Invalid friend',
-                    'message' => 'You can\'t add friends with yourself!'
+                    'message' => 'You can\'t add friends with yourself.'
                 ]
             ], Response::HTTP_BAD_REQUEST);
         }
@@ -61,7 +61,7 @@ class FriendRequestController extends Controller
             });
 
             return response([
-                'message' => 'Friend added successfully!'
+                'message' => 'Friend added successfully.'
             ], Response::HTTP_CREATED);
         } else {
             $user->outgoing_friends()->attach($friend);
