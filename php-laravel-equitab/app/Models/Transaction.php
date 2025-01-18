@@ -31,7 +31,9 @@ class Transaction extends Model
     ];
 
     public function setOwerIdsAttribute(array $owerIds) {
-        $this->owers()->sync($owerIds);
+        if ($this->id) {
+            $this->owers()->sync($owerIds);
+        }
     }
 
     public function payer() {

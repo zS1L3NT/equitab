@@ -22,6 +22,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::apiResource('ledgers', \App\Http\Controllers\Api\LedgerController::class);
 
             Route::apiResource('ledgers.transactions', \App\Http\Controllers\Api\TransactionController::class)->scoped();
+
+            Route::apiResource('ledgers.transactions.products', \App\Http\Controllers\Api\ProductController::class)->scoped();
         });
     });
 

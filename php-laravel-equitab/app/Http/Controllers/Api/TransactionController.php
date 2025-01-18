@@ -30,7 +30,7 @@ class TransactionController extends Controller
             'ower_ids.*' => ['required', 'integer', new IsLedgerUser],
         ]);
 
-        $ledger->transactions()->create($data);
+        $ledger->transactions()->create($data)->owers()->sync($data['ower_ids']);
 
         return response([
             'message' => 'Transaction created!'

@@ -12,6 +12,24 @@ class Product extends Model
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'name',
+        'index',
+        'quantity',
+        'cost',
+        'ower_ids'
+    ];
+
+    protected $with = [
+        'owers',
+    ];
+
+    public function setOwerIdsAttribute(array $owerIds) {
+        if ($this->id) {
+            $this->owers()->sync($owerIds);
+        }
+    }
+
     public function owers() {
         return $this->belongsToMany(User::class, 'product_ower', 'product_id', 'ower_id');
     }

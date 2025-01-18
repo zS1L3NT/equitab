@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('index')->unsigned();
             $table->integer('quantity')->unsigned()->default(1);
             $table->decimal('cost', 12, 4);
+
+            $table->unique(['transaction_id', 'index']);
         });
     }
 
