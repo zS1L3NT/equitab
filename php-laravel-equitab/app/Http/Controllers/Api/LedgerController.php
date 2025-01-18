@@ -29,7 +29,7 @@ class LedgerController extends Controller
         Ledger::create($data)->users()->sync($data['user_ids']);
 
         return response([
-            'message' => 'Ledger created!'
+            'message' => 'Ledger created.'
         ], Response::HTTP_CREATED);
     }
 
@@ -55,7 +55,7 @@ class LedgerController extends Controller
         $ledger->update($data);
 
         return [
-            'message' => 'Ledger updated!'
+            'message' => 'Ledger updated.'
         ];
     }
 
@@ -64,7 +64,7 @@ class LedgerController extends Controller
         $ledger->delete();
 
         return [
-            'message' => 'Ledger deleted!'
+            'message' => 'Ledger deleted.'
         ];
     }
 }
