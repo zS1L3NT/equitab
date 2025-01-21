@@ -2,27 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 
-/**
- * @property int $id
- * @property string $username
- * @property string $phone_number
- * @property Carbon|null $phone_number_verified_at
- * @property string|null $picture
- * @property string $password
- *
- * @property Collection<User> $friends
- * @property Collection<User> $outgoing_friends
- * @property Collection<User> $incoming_friends
- */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -38,7 +24,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'pivot'
     ];
 
     protected $casts = [

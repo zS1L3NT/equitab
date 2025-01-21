@@ -20,6 +20,7 @@ class TransactionResource extends JsonResource
             'cost' => $this->cost,
             'location' => $this->location,
             'datetime' => $this->datetime,
+            'aggregates' => $this->aggregates,
             'category' => $this->category,
             'payer' => new UserResource($this->payer),
             'owers' => UserResource::collection($this->owers),

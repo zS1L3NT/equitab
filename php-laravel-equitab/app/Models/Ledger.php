@@ -18,10 +18,12 @@ class Ledger extends Model
         'user_ids'
     ];
 
-    public function getSummaryAttribute()
-    {
-        // TODO Summarise the ledger for the current user
-        return 'Summary...';
+    public function getAggregatesAttribute() {
+        return $this->users()
+            ->withPivot('aggregate')
+            ->get()
+            ->map(fn($u) => [$u->username => $u->pivot->aggregate])
+            ->collapseWithKeys();
     }
 
     public function getPictureAttribute(): string|null

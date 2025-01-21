@@ -30,6 +30,14 @@ class Transaction extends Model
         'datetime' => 'datetime:c'
     ];
 
+    public function getAggregatesAttribute() {
+        return $this->owers()
+            ->withPivot('aggregate')
+            ->get()
+            ->map(fn($u) => [$u->username => $u->pivot->aggregate])
+            ->collapseWithKeys();
+    }
+
     public function setOwerIdsAttribute(array $owerIds)
     {
         if ($this->id) {

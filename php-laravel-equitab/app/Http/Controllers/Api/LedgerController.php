@@ -13,7 +13,7 @@ class LedgerController extends Controller
 {
     public function index()
     {
-        return LedgerResource::collection(auth()->user()->ledgers()->paginate());
+        return LedgerResource::collection(auth()->user()->ledgers()->withPivot('aggregate')->paginate());
     }
 
     public function store(Request $request)

@@ -56,7 +56,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $currency_code
  * @property-read \App\Models\Currency $currency
- * @property-read mixed $summary
+ * @property-read mixed $aggregates
  * @property-write mixed $user_ids
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
  * @property-read int|null $transactions_count
@@ -120,6 +120,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Category|null $category
+ * @property-read mixed $aggregates
  * @property-read \App\Models\Ledger $ledger
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $owers
  * @property-read int|null $owers_count
@@ -151,22 +152,22 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $username
- * @property string $phone_number
- * @property Carbon|null $phone_number_verified_at
- * @property string|null $picture
  * @property string $password
- * @property Collection<User> $friends
- * @property Collection<User> $outgoing_friends
- * @property Collection<User> $incoming_friends
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $phone_number
+ * @property \Illuminate\Support\Carbon|null $phone_number_verified_at
+ * @property string|null $picture
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $friends
  * @property-read int|null $friends_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $incoming_friends
  * @property-read int|null $incoming_friends_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ledger> $ledgers
  * @property-read int|null $ledgers_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $outgoing_friends
  * @property-read int|null $outgoing_friends_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
