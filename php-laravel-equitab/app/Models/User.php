@@ -33,7 +33,7 @@ class User extends Authenticatable
 
     public function getPictureAttribute(): string|null
     {
-        return $this->attributes['picture'] ? asset($this->attributes['picture']) : null;
+        return isset($this->attributes['picture']) ? asset($this->attributes['picture']) : null;
     }
 
     public function setPictureAttribute(UploadedFile|string|null $picture): void

@@ -30,10 +30,12 @@ class ProductController extends Controller
             'ower_ids.*' => ['required', 'integer', new IsTransactionOwer],
         ]);
 
-        $transaction->products()->create($data)->owers()->sync($data['ower_ids']);
+        $product = $transaction->products()->create($data);
+        $product->owers()->sync($data['ower_ids']);
 
         return response([
-            'message' => 'Product created.'
+            'message' => 'Product created.',
+            'data' => new ProductResource($product)
         ], Response::HTTP_CREATED);
     }
 
@@ -61,6 +63,7 @@ class ProductController extends Controller
 
         return [
             'message' => 'Product updated.',
+            'data' => new ProductResource($product)
         ];
     }
 

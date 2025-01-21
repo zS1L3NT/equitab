@@ -37,7 +37,8 @@ class ProfileController extends Controller
         $user->update($data);
 
         return [
-            'message' => 'Profile updated successfully'
+            'message' => 'Profile updated successfully.',
+            'data' => new UserResource($user)
         ];
     }
 }

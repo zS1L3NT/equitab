@@ -26,10 +26,12 @@ class LedgerController extends Controller
             'user_ids.*' => ['required', 'integer', new IsMyFriend]
         ]);
 
-        Ledger::create($data)->users()->sync($data['user_ids']);
+        $ledger = Ledger::create($data);
+        $ledger->users()->sync($data['user_ids']);
 
         return response([
-            'message' => 'Ledger created.'
+            'message' => 'Ledger created.',
+            'data' => new LedgerResource($ledger)
         ], Response::HTTP_CREATED);
     }
 
@@ -55,7 +57,8 @@ class LedgerController extends Controller
         $ledger->update($data);
 
         return [
-            'message' => 'Ledger updated.'
+            'message' => 'Ledger updated.',
+            'data' => new LedgerResource($ledger)
         ];
     }
 
