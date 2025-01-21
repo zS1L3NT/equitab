@@ -20,6 +20,10 @@ class Product extends Model
         'ower_ids'
     ];
 
+    protected $touches = [
+        'transaction'
+    ];
+
     protected $with = [
         'owers',
     ];
