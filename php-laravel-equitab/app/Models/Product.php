@@ -28,6 +28,11 @@ class Product extends Model
         'owers',
     ];
 
+    public function getTotalCostAttribute()
+    {
+        return round($this->cost * $this->quantity * 100, 2);
+    }
+
     public function setOwerIdsAttribute(array $owerIds)
     {
         if ($this->id) {

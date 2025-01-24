@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Models\Ledger;
 use App\Models\Transaction;
+use App\Rules\HasNoProducts;
 use App\Rules\IsLedgerUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class TransactionController extends Controller
@@ -30,8 +32,11 @@ class TransactionController extends Controller
             'ower_ids.*' => ['required', 'integer', new IsLedgerUser],
         ]);
 
-        $transaction = $ledger->transactions()->create($data);
-        $transaction->owers()->sync($data['ower_ids']);
+        $transaction = null;
+        DB::transaction(function () use ($data, $ledger) {
+            $transaction = $ledger->transactions()->create($data);
+            $transaction->owers()->sync($data['ower_ids']);
+        });
 
         return response([
             'message' => 'Transaction created.',
@@ -52,7 +57,7 @@ class TransactionController extends Controller
     {
         $data = $request->validate([
             'name' => 'string',
-            'cost' => 'decimal:0,4',
+            'cost' => ['decimal:0,4', new HasNoProducts],
             'location' => 'string',
             'datetime' => 'date',
             'category_id' => 'exists:categories,id',

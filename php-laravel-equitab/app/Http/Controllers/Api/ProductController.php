@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Rules\IsProductIndexUnique;
 use App\Rules\IsTransactionOwer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
@@ -30,8 +31,28 @@ class ProductController extends Controller
             'ower_ids.*' => ['required', 'integer', new IsTransactionOwer],
         ]);
 
-        $product = $transaction->products()->create($data);
-        $product->owers()->sync($data['ower_ids']);
+        $product = null;
+
+        DB::transaction(function () use ($data, $transaction) {
+            $total_cost = $data['quantity'] * $data['cost'];
+
+            if ($transaction->products()->exists()) {
+                /**
+                 * Transaction already has products
+                 * Keep the transaction's cost in sync with the products' total cost
+                 */
+                $transaction->increment('cost', $total_cost);
+            } else {
+                /**
+                 * Adding the first product to a transaction
+                 * Reset the transaction's cost to be the new product's total cost
+                 */
+                $transaction->update(['cost' => $total_cost]);
+            }
+
+            $product = $transaction->products()->create($data);
+            $product->owers()->sync($data['ower_ids']);
+        });
 
         return response([
             'message' => 'Product created.',
@@ -59,7 +80,21 @@ class ProductController extends Controller
             'ower_ids.*' => ['integer', new IsTransactionOwer],
         ]);
 
-        $product->update($data);
+        DB::transaction(function () use ($data, $transaction, $product) {
+            $quantity = isset($data['quantity']) ? $data['quantity'] : $product->quantity;
+            $cost = isset($data['cost']) ? $data['cost'] : $product->cost;
+            $total_cost = $quantity * $cost;
+
+            if ($total_cost != $product->total_cost) {
+                /**
+                 * Total cost updated via either quantity or cost
+                 * Keep the transaction's cost in sync with the products' total costs
+                 */
+                $transaction->increment('cost', $total_cost);
+            }
+
+            $product->update($data);
+        });
 
         return [
             'message' => 'Product updated.',
@@ -69,7 +104,23 @@ class ProductController extends Controller
 
     public function destroy(Ledger $ledger, Transaction $transaction, Product $product)
     {
-        $product->delete();
+        DB::transaction(function () use ($transaction, $product) {
+            $product->delete();
+
+            if ($transaction->products()->exists()) {
+                /**
+                 * Transaction still has products
+                 * Keep the transaction's cost in sync with the products' total costs
+                 */
+                $transaction->decrement('cost', $product->total_cost);
+            } else {
+                /**
+                 * Transaction has no more products after deleting the current one
+                 * Reset the transaction's cost to be $0 by default
+                 */
+                $transaction->update(['cost' => 0]);
+            }
+        });
 
         return [
             'message' => 'Product deleted.'

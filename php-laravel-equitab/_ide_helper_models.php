@@ -86,6 +86,7 @@ namespace App\Models{
  * @property int $index
  * @property int $quantity
  * @property string $cost
+ * @property-read mixed $total_cost
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $owers
  * @property-read int|null $owers_count
  * @property-write mixed $ower_ids
