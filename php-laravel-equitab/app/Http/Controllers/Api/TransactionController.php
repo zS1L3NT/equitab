@@ -32,10 +32,10 @@ class TransactionController extends Controller
             'ower_ids.*' => ['required', 'integer', new IsLedgerUser],
         ]);
 
-        $transaction = null;
-        DB::transaction(function () use ($data, $ledger) {
+        $transaction = DB::transaction(function () use ($data, $ledger, &$transaction) {
             $transaction = $ledger->transactions()->create($data);
             $transaction->owers()->sync($data['ower_ids']);
+            return $transaction;
         });
 
         return response([

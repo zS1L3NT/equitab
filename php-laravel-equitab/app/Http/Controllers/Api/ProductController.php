@@ -31,9 +31,7 @@ class ProductController extends Controller
             'ower_ids.*' => ['required', 'integer', new IsTransactionOwer],
         ]);
 
-        $product = null;
-
-        DB::transaction(function () use ($data, $transaction) {
+        $product = DB::transaction(function () use ($data, $transaction, &$product) {
             $total_cost = $data['quantity'] * $data['cost'];
 
             if ($transaction->products()->exists()) {
@@ -52,6 +50,7 @@ class ProductController extends Controller
 
             $product = $transaction->products()->create($data);
             $product->owers()->sync($data['ower_ids']);
+            return $product;
         });
 
         return response([

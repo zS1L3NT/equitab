@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LedgerResource;
 use App\Models\Ledger;
+use App\Rules\HasMyUser;
 use App\Rules\IsMyFriend;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class LedgerController extends Controller
@@ -22,12 +24,15 @@ class LedgerController extends Controller
             'name' => 'required|string',
             'currency_code' => 'required|exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'user_ids' => 'required|array|min:1',
+            'user_ids' => ['required', 'array', 'min:1', new HasMyUser],
             'user_ids.*' => ['required', 'integer', new IsMyFriend]
         ]);
 
-        $ledger = Ledger::create($data);
-        $ledger->users()->sync($data['user_ids']);
+        $ledger = DB::transaction(function () use ($data) {
+            $ledger = Ledger::create($data);
+            $ledger->users()->sync($data['user_ids']);
+            return $ledger;
+        });
 
         return response([
             'message' => 'Ledger created.',
