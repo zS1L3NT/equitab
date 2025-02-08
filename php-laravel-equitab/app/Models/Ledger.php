@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -9,7 +10,7 @@ use Illuminate\Http\UploadedFile;
 class Ledger extends Model
 {
     /** @use HasFactory<\Database\Factories\LedgerFactory> */
-    use HasFactory;
+    use HasFactory, HasSoftRelationships;
 
     protected $fillable = [
         'name',
@@ -17,14 +18,6 @@ class Ledger extends Model
         'currency_code',
         'user_ids'
     ];
-
-    public function getAggregatesAttribute() {
-        return $this->users()
-            ->withPivot('aggregate')
-            ->get()
-            ->map(fn($u) => [$u->username => $u->pivot->aggregate])
-            ->collapseWithKeys();
-    }
 
     public function getPictureAttribute(): string|null
     {
@@ -50,7 +43,10 @@ class Ledger extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)
+            ->withPivot('aggregate')
+            ->withSoftDeletes()
+            ->withTrashedPivots();
     }
 
     public function transactions()

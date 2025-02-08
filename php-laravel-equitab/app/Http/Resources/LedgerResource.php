@@ -19,7 +19,6 @@ class LedgerResource extends JsonResource
             'name' => $this->name,
             'picture' => $this->picture,
             'aggregate' => $this->whenPivotLoaded('ledger_user', $this->pivot?->aggregate),
-            'aggregates' => $this->whenLoaded('users', $this->aggregates),
             'currency' => $this->currency,
             'users' => UserResource::collection($this->whenLoaded('users')),
         ];

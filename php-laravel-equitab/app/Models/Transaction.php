@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
-    use HasFactory;
+    use HasFactory, HasSoftRelationships;
 
     protected $fillable = [
         'name',
@@ -30,14 +31,6 @@ class Transaction extends Model
         'datetime' => 'datetime:c'
     ];
 
-    public function getAggregatesAttribute() {
-        return $this->owers()
-            ->withPivot('aggregate')
-            ->get()
-            ->map(fn($u) => [$u->username => $u->pivot->aggregate])
-            ->collapseWithKeys();
-    }
-
     public function setOwerIdsAttribute(array $owerIds)
     {
         if ($this->id) {
@@ -52,7 +45,10 @@ class Transaction extends Model
 
     public function owers()
     {
-        return $this->belongsToMany(User::class, 'transaction_ower', 'transaction_id', 'ower_id');
+        return $this->belongsToMany(User::class, 'transaction_ower', 'transaction_id', 'ower_id')
+            ->withPivot('aggregate')
+            ->withSoftDeletes()
+            ->withTrashedPivots();
     }
 
     public function ledger()

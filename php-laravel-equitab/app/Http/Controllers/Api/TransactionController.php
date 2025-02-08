@@ -16,7 +16,9 @@ class TransactionController extends Controller
 {
     public function index(Ledger $ledger)
     {
-        return TransactionResource::collection($ledger->transactions()->withCount('products')->paginate());
+        $ledger->load('users');
+
+        return TransactionResource::collection($ledger->transactions()->with('owers')->withCount('products')->paginate());
     }
 
     public function store(Request $request, Ledger $ledger)
