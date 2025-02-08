@@ -1,0 +1,48 @@
+services:
+  laravel:
+    build:
+      context: .
+    image: php-laravel-equitab-laravel
+    container_name: php-laravel-equitab-laravel
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+  postgres:
+    image: postgres:17.2
+    container_name: php-laravel-equitab-postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgres/data
+  dbeaver:
+    image: dbeaver/cloudbeaver:24.3.3
+    container_name: php-laravel-equitab-dbeaver
+    ports:
+      - 8080:8978
+    volumes:
+      - dbeaver-data:/opt/cloudbeaver/workspace
+  redis:
+    image: redis:7.4.2
+    container_name: php-laravel-equitab-redis
+    volumes:
+      - redis-data:/data
+  redisinsight:
+    image: redis/redisinsight:2.64
+    container_name: php-laravel-equitab-redisinsight
+    ports:
+      - 5540:5540
+    volumes:
+      - redisinsight-data:/data
+volumes:
+  postgres-data:
+  dbeaver-data:
+  redis-data:
+  redisinsight-data:
