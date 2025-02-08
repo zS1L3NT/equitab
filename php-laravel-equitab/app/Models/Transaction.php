@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
+use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,7 +44,7 @@ class Transaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function owers()
+    public function owers(): BelongsToManySoft
     {
         return $this->belongsToMany(User::class, 'transaction_ower', 'transaction_id', 'ower_id')
             ->withPivot('aggregate')

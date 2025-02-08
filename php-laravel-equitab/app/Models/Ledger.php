@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
+use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -45,7 +46,7 @@ class Ledger extends Model
         return $this->belongsTo(Currency::class);
     }
 
-    public function users()
+    public function users(): BelongsToManySoft
     {
         return $this->belongsToMany(User::class)
             ->withPivot('aggregate')

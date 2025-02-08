@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
+use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -57,12 +58,12 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'friend_requests', 'to_user_id', 'from_user_id');
     }
 
-    public function ledgers()
+    public function ledgers(): BelongsToManySoft
     {
         return $this->belongsToMany(Ledger::class)->withSoftDeletes();
     }
 
-    public function transactions()
+    public function transactions(): BelongsToManySoft
     {
         return $this->hasMany(Transaction::class, 'ower_id')->withSoftDeletes();
     }
