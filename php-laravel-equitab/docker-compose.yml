@@ -1,12 +1,26 @@
 services:
-  laravel:
+  laravel-server:
     build:
       context: .
     image: php-laravel-equitab-laravel
-    container_name: php-laravel-equitab-laravel
+    container_name: php-laravel-equitab-laravel-server
+    command: php artisan serve --host=0.0.0.0
     ports:
       - 8000:8000
     depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+  laravel-worker:
+    build:
+      context: .
+    image: php-laravel-equitab-laravel
+    container_name: php-laravel-equitab-laravel-worker
+    command: php artisan queue:work
+    depends_on:
+      - laravel-server
       - postgres
     volumes:
       - .:/app

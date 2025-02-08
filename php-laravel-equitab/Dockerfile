@@ -17,4 +17,3 @@ RUN sed -ri -e 's!;xdebug.client_port = 9000!xdebug.client_port = 9000!' /opt/bi
 COPY . .
 
 EXPOSE 8000
-CMD [ "/opt/bitnami/scripts/laravel/run.sh" ]
