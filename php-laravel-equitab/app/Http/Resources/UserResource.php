@@ -22,13 +22,13 @@ class UserResource extends JsonResource
         /**
          * Mask away user information if the user has been removed from the ledger
          */
-        if ($ledger && $ledger->users->where('id', $this->id)->whereNull('pivot.deleted_at')->count() == 1) {
+        if (!$ledger || $ledger->users->where('id', $this->id)->whereNull('pivot.deleted_at')->count() == 1) {
             $user['username'] = $this->username;
             $user['phone_number'] = $this->phone_number_verified_at ? $this->phone_number : null;
             $user['picture'] = $this->picture;
         }
 
-        if (isset($this->pivot) && isset($this->pivot->aggregate)) {
+        if (isset($this->pivot)) {
             $user['aggregate'] = $this->pivot->aggregate;
         }
 
