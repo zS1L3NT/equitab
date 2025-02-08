@@ -19,6 +19,10 @@ class Ledger extends Model
         'user_ids'
     ];
 
+    protected $with = [
+        'currency'
+    ];
+
     public function getPictureAttribute(): string|null
     {
         return isset($this->attributes['picture']) ? asset($this->attributes['picture']) : null;
