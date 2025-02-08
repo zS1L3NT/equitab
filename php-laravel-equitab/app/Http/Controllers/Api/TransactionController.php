@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Models\Ledger;
 use App\Models\Transaction;
+use App\Rules\IsNotProductUser;
 use App\Rules\HasNoProducts;
 use App\Rules\IsLedgerUser;
 use Illuminate\Http\Request;
@@ -64,7 +65,7 @@ class TransactionController extends Controller
             'datetime' => 'date',
             'category_id' => 'exists:categories,id',
             'payer_id' => ['integer', new IsLedgerUser],
-            'ower_ids' => 'array|min:1',
+            'ower_ids' => ['array', 'min:1', new IsNotProductUser],
             'ower_ids.*' => ['integer', new IsLedgerUser],
         ]);
 
