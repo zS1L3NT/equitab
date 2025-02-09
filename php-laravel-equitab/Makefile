@@ -15,5 +15,6 @@ seed:
 bash:
 	docker compose exec laravel-server /bin/bash
 ide-helper:
-	php artisan clear-compiled
-	php artisan ide-helper:generate
+	docker compose exec laravel-server php artisan clear-compiled
+	docker compose exec laravel-server php artisan ide-helper:models -E
+	docker compose exec laravel-server php artisan ide-helper:generate

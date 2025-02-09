@@ -63,11 +63,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Ledger::class)->withSoftDeletes();
     }
 
-    public function transactions(): BelongsToManySoft
-    {
-        return $this->hasMany(Transaction::class, 'ower_id')->withSoftDeletes();
-    }
-
     public function products()
     {
         return $this->hasMany(Product::class, 'ower_id');
