@@ -19,7 +19,8 @@ class CurrencySeeder extends Seeder
         $currencies = array_map(fn($c) => [
             'code' => $c['code'],
             'name' => $c['name'],
-            'symbol' => $c['symbol_native']
+            'symbol' => $c['symbol_native'],
+            'decimals' => $c['decimal_digits'],
         ], $currencies);
 
         Currency::insert($currencies);
