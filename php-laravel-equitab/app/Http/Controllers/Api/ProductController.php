@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\ProductChanged;
+use App\Events\TransactionChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\TransactionResource;
 use App\Models\Ledger;
 use App\Models\Product;
 use App\Models\Transaction;
@@ -31,6 +34,9 @@ class ProductController extends Controller
             'ower_ids.*' => ['required', 'integer', new IsTransactionOwer],
         ]);
 
+        $tevent = new TransactionChanged($ledger->id);
+        $tevent->old = json_decode($transaction->toJson(), true);
+
         $product = DB::transaction(function () use ($data, $transaction, &$product) {
             $total_cost = $data['quantity'] * $data['cost'];
 
@@ -49,9 +55,18 @@ class ProductController extends Controller
             }
 
             $product = $transaction->products()->create($data);
+            $product->unsetRelation('transaction');
             $product->owers()->sync($data['ower_ids']);
             return $product;
         });
+
+        $pevent = new ProductChanged($ledger->id);
+        $pevent->new = json_decode($product->toJson(), true);
+        event($pevent);
+
+        $transaction->refresh();
+        $tevent->new = json_decode($transaction->toJson(), true);
+        event($tevent);
 
         return response([
             'message' => 'Product created.',
@@ -79,6 +94,12 @@ class ProductController extends Controller
             'ower_ids.*' => ['integer', new IsTransactionOwer],
         ]);
 
+        $pevent = new ProductChanged($ledger->id);
+        $pevent->old = json_decode($product->toJson(), true);
+
+        $tevent = new TransactionChanged($ledger->id);
+        $tevent->old = json_decode($transaction->toJson(), true);
+
         DB::transaction(function () use ($data, $transaction, $product) {
             $quantity = isset($data['quantity']) ? $data['quantity'] : $product->quantity;
             $cost = isset($data['cost']) ? $data['cost'] : $product->cost;
@@ -93,7 +114,16 @@ class ProductController extends Controller
             }
 
             $product->update($data);
+            $product->unsetRelation('transaction');
         });
+
+        $product->refresh();
+        $pevent->new = json_decode($product->toJson(), true);
+        if ($pevent->old != $pevent->new) event($pevent);
+
+        $transaction->refresh();
+        $tevent->new = json_decode($transaction->toJson(), true);
+        if ($tevent->old != $tevent->new) event($tevent);
 
         return [
             'message' => 'Product updated.',
@@ -103,6 +133,12 @@ class ProductController extends Controller
 
     public function destroy(Ledger $ledger, Transaction $transaction, Product $product)
     {
+        $pevent = new ProductChanged($ledger->id);
+        $pevent->old = json_decode($product->toJson(), true);
+
+        $tevent = new TransactionChanged($ledger->id);
+        $tevent->old = json_decode($transaction->toJson(), true);
+
         DB::transaction(function () use ($transaction, $product) {
             $product->delete();
 
@@ -120,6 +156,12 @@ class ProductController extends Controller
                 $transaction->update(['cost' => 0]);
             }
         });
+
+        event($pevent);
+
+        $transaction->refresh();
+        $tevent->new = json_decode($transaction->toJson(), true);
+        if ($tevent->old != $tevent->new) event($tevent);
 
         return [
             'message' => 'Product deleted.'

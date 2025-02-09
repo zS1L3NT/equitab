@@ -19,7 +19,7 @@ class LedgerResource extends JsonResource
             'name' => $this->name,
             'picture' => $this->picture,
             'aggregate' => $this->whenPivotLoaded('ledger_user', $this->pivot?->aggregate),
-            'currency' => $this->currency,
+            'currency' => $this->currency->toArray(),
             'users' => UserResource::collection($this->whenLoaded('users')),
         ];
     }

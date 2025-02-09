@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LedgerResource;
+use App\Events\LedgerChanged;
 use App\Models\Ledger;
 use App\Rules\HasMyUser;
 use App\Rules\IsMyFriend;
@@ -34,6 +35,10 @@ class LedgerController extends Controller
             return $ledger;
         });
 
+        $event = new LedgerChanged($ledger->id);
+        $event->new = json_decode($ledger->toJson(), true);
+        event($event);
+
         return response([
             'message' => 'Ledger created.',
             'data' => new LedgerResource($ledger)
@@ -42,8 +47,6 @@ class LedgerController extends Controller
 
     public function show(Ledger $ledger)
     {
-        $ledger->load('users');
-
         return [
             'data' => new LedgerResource($ledger)
         ];
@@ -59,7 +62,14 @@ class LedgerController extends Controller
             'user_ids.*' => ['integer', new IsMyFriend]
         ]);
 
+        $event = new LedgerChanged($ledger->id);
+        $event->old = json_decode($ledger->toJson(), true);
+
         $ledger->update($data);
+
+        $ledger->refresh();
+        $event->new = json_decode($ledger->toJson(), true);
+        if ($event->old != $event->new) event($event);
 
         return [
             'message' => 'Ledger updated.',
@@ -69,7 +79,12 @@ class LedgerController extends Controller
 
     public function destroy(Ledger $ledger)
     {
+        $event = new LedgerChanged($ledger->id);
+        $event->old = json_decode($ledger->toJson(), true);
+
         $ledger->delete();
+
+        event($event);
 
         return [
             'message' => 'Ledger deleted.'

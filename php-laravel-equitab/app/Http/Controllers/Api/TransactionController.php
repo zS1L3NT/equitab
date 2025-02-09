@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\TransactionChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Models\Ledger;
@@ -41,6 +42,10 @@ class TransactionController extends Controller
             return $transaction;
         });
 
+        $event = new TransactionChanged($ledger->id);
+        $event->new = json_decode($transaction->toJson(), true);
+        event($event);
+
         return response([
             'message' => 'Transaction created.',
             'data' => new TransactionResource($transaction)
@@ -69,7 +74,14 @@ class TransactionController extends Controller
             'ower_ids.*' => ['integer', new IsLedgerUser],
         ]);
 
+        $event = new TransactionChanged($ledger->id);
+        $event->old = json_decode($transaction->toJson(), true);
+
         $transaction->update($data);
+
+        $transaction->refresh();
+        $event->new = json_decode($transaction->toJson(), true);
+        if ($event->old != $event->new) event($event);
 
         return [
             'message' => 'Transaction updated.',
@@ -79,7 +91,12 @@ class TransactionController extends Controller
 
     public function destroy(Ledger $ledger, Transaction $transaction)
     {
+        $event = new TransactionChanged($ledger->id);
+        $event->old = json_decode($transaction->toJson(), true);
+
         $transaction->delete();
+
+        event($event);
 
         return [
             'message' => 'Transaction deleted.'

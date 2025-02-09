@@ -21,7 +21,8 @@ class Ledger extends Model
     ];
 
     protected $with = [
-        'currency'
+        'currency',
+        'users',
     ];
 
     public function getPictureAttribute(): string|null
