@@ -18,8 +18,8 @@ class Transaction extends Model
         'location',
         'datetime',
         'category_id',
-        'payer_id',
-        'ower_ids'
+        'payer',
+        'owers'
     ];
 
     protected $with = [
@@ -35,6 +35,7 @@ class Transaction extends Model
     public function setPayerAttribute(array $payer)
     {
         if ($this->id) {
+            $this->update(['payer_id' => $payer['id']]);
         }
     }
 
