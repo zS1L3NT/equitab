@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsLedgerUser implements ValidationRule
+class IsLedgerUserAggregatesEqualToCost implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -17,12 +17,18 @@ class IsLedgerUser implements ValidationRule
         /** @var \App\Models\Ledger $ledger */
         $ledger = request()->route('ledger');
 
-        if (!$ledger) {
+        if (!$ledger || !is_array($value)) {
             abort(500);
         }
 
-        if ($ledger->users()->where('users.id', $value)->doesntExist()) {
-            $fail('This user either doesn\'t exist or doesn\'t have permission to access this ledger.');
+        if (count(array_filter($value, fn($o) => !isset($o['id']) || !isset($o['aggregate']))) > 0) {
+            return;
+        }
+
+        $cost = request('cost') ?: $ledger->cost;
+        $aggregates = array_sum(array_map(fn($o) => $o['aggregate'], $value));
+        if ($aggregates != $cost) {
+            $fail('The ower aggregates do not add up to the transaction cost!');
         }
     }
 }

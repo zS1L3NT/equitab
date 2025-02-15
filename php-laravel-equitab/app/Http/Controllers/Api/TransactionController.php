@@ -7,9 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Models\Ledger;
 use App\Models\Transaction;
+use App\Rules\IsLedgerUserAggregatesEqualToCost;
 use App\Rules\IsNotProductUser;
 use App\Rules\HasNoProducts;
-use App\Rules\IsLedgerUser;
+use App\Rules\IsLedgerUserId;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,14 +32,17 @@ class TransactionController extends Controller
             'location' => 'string',
             'datetime' => 'required|date',
             'category_id' => 'required|exists:categories,id',
-            'payer_id' => ['required', 'integer', new IsLedgerUser],
-            'ower_ids' => 'required|array|min:1',
-            'ower_ids.*' => ['required', 'integer', new IsLedgerUser],
+            'payer' => 'required|array',
+            'payer.id' => ['required', 'integer', new IsLedgerUserId],
+            'owers' => ['required', 'array', 'min:1', new IsLedgerUserAggregatesEqualToCost],
+            'owers.*' => 'required|array',
+            'owers.*.id' => ['required', 'integer', new IsLedgerUserId],
+            'owers.*.aggregate' => 'required|decimal:0,4'
         ]);
 
         $transaction = DB::transaction(function () use ($data, $ledger, &$transaction) {
             $transaction = $ledger->transactions()->create($data);
-            $transaction->owers()->sync($data['ower_ids']);
+            $transaction->update(['payer' => $data['payer'], 'owers' => $data['owers']]);
             return $transaction;
         });
 
@@ -69,9 +73,12 @@ class TransactionController extends Controller
             'location' => 'string',
             'datetime' => 'date',
             'category_id' => 'exists:categories,id',
-            'payer_id' => ['integer', new IsLedgerUser],
-            'ower_ids' => ['array', 'min:1', new IsNotProductUser],
-            'ower_ids.*' => ['integer', new IsLedgerUser],
+            'payer' => 'array',
+            'payer.id' => ['present_with:payer', 'integer', new IsLedgerUserId],
+            'owers' => ['array', 'min:1', new IsLedgerUserAggregatesEqualToCost],
+            'owers.*' => 'present_with:owers|array',
+            'owers.*.id' => ['present_with:owers', 'integer', new IsLedgerUserId],
+            'owers.*.aggregate' => 'present_with:owers|decimal:0,4'
         ]);
 
         $event = new TransactionChanged($ledger->id);

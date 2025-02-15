@@ -37,17 +37,22 @@ class Transaction extends Model
         'datetime' => 'datetime:c'
     ];
 
-    public function setPayerIdAttribute(int $payerId)
+    public function setPayerAttribute(array $payer)
     {
         if ($this->id) {
-            $this->payer()->sync([$payerId]);
+            $this->payer()->sync([$payer['id']]);
         }
     }
 
-    public function setOwerIdsAttribute(array $owerIds)
+    public function setOwersAttribute(array $owers)
     {
         if ($this->id) {
-            $this->owers()->sync($owerIds);
+            $this->owers()->sync(array_map(fn($o) => $o['id'], $owers));
+
+            foreach ($this->owers as $ower) {
+                $aggregate = array_filter($owers, fn($o) => $o['id'] == $ower->id)[0]['aggregate'];
+                $ower->pivot->update(compact('aggregate'));
+            }
         }
     }
 
