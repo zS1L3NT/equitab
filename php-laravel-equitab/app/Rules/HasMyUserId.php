@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class HasMyUser implements ValidationRule
+class HasMyUserId implements ValidationRule
 {
     /**
      * Run the validation rule.

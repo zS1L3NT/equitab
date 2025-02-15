@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\LedgerResource;
 use App\Events\LedgerChanged;
 use App\Models\Ledger;
-use App\Rules\HasMyUser;
-use App\Rules\IsMyFriend;
+use App\Rules\HasMyUserId;
+use App\Rules\IsUserIdMyFriend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,13 +25,14 @@ class LedgerController extends Controller
             'name' => 'required|string',
             'currency_code' => 'required|exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'user_ids' => ['required', 'array', 'min:1', new HasMyUser],
-            'user_ids.*' => ['required', 'integer', new IsMyFriend]
+            'users' => ['required', 'array', 'min:1', new HasMyUserId],
+            'users.*' => ['required', 'array'],
+            'users.*.id' => ['required', 'integer', new IsUserIdMyFriend],
         ]);
 
         $ledger = DB::transaction(function () use ($data) {
             $ledger = Ledger::create($data);
-            $ledger->users()->sync($data['user_ids']);
+            $ledger->update(['users' => $data['users']]);
             return $ledger;
         });
 
@@ -58,8 +59,9 @@ class LedgerController extends Controller
             'name' => 'string',
             'currency_code' => 'exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'user_ids' => 'array|min:1',
-            'user_ids.*' => ['integer', new IsMyFriend]
+            'users' => 'array|min:1',
+            'users.*' => 'present_with:users|array',
+            'users.*.id' => ['present_with:users', 'integer', new IsUserIdMyFriend]
         ]);
 
         $event = new LedgerChanged($ledger->id);
@@ -69,7 +71,8 @@ class LedgerController extends Controller
 
         $ledger->refresh();
         $event->new = json_decode($ledger->toJson(), true);
-        if ($event->old != $event->new) event($event);
+        if ($event->old != $event->new)
+            event($event);
 
         return [
             'message' => 'Ledger updated.',

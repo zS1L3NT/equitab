@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsMyFriend implements ValidationRule
+class IsUserIdMyFriend implements ValidationRule
 {
     /**
      * Run the validation rule.

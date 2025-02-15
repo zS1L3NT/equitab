@@ -17,7 +17,7 @@ class Ledger extends Model
         'name',
         'picture',
         'currency_code',
-        'user_ids'
+        'users'
     ];
 
     protected $with = [
@@ -35,10 +35,10 @@ class Ledger extends Model
         $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/ledgers/' . $this->id . '.png') : $picture;
     }
 
-    public function setUserIdsAttribute(array $userIds)
+    public function setUsersAttribute(array $users)
     {
         if ($this->id) {
-            $this->users()->sync($userIds);
+            $this->users()->sync(array_map(fn($u) => $u['id'], $users));
         }
     }
 
