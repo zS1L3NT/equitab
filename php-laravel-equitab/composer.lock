@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b584fd911062f3578202ab2f5e4addd9",
+    "content-hash": "ac3442d1dea4311b9b49e09bb12dfb6c",
     "packages": [
         {
             "name": "ably/ably-php",
@@ -7221,73 +7221,6 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
-        },
-        {
-            "name": "zing/laravel-eloquent-relationships",
-            "version": "2.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zingimmick/laravel-eloquent-relationships.git",
-                "reference": "f0d58c14d81825ccd20462268e8aa7f0969d458c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zingimmick/laravel-eloquent-relationships/zipball/f0d58c14d81825ccd20462268e8aa7f0969d458c",
-                "reference": "f0d58c14d81825ccd20462268e8aa7f0969d458c",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": "^8.69 || ^9.0 || ^10.0 || ^11.0",
-                "illuminate/support": "^8.69 || ^9.0 || ^10.0 || ^11.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "~1.3.3 || ^1.4.2",
-                "nunomaduro/larastan": "^1.0 || ^2.0",
-                "orchestra/testbench": "^6.0 || ^7.0 || ^8.0 || ^9.0",
-                "phpunit/phpunit": "^9.3.3 || ^10.0 || ^11.0",
-                "zing/coding-standard": "^6.4 || ^7.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Zing\\LaravelEloquentRelationships\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "zingimmick",
-                    "email": "zingimmick@outlook.com",
-                    "homepage": "https://github.com/zingimmick"
-                }
-            ],
-            "description": "More eloquent relationships for Laravel",
-            "homepage": "https://github.com/zingimmick/laravel-eloquent-relationships",
-            "keywords": [
-                "Relationships",
-                "eloquent",
-                "laravel"
-            ],
-            "support": {
-                "issues": "https://github.com/zingimmick/laravel-eloquent-relationships/issues",
-                "source": "https://github.com/zingimmick/laravel-eloquent-relationships"
-            },
-            "funding": [
-                {
-                    "url": "https://www.paypal.com/paypalme/zingimmick",
-                    "type": "custom"
-                }
-            ],
-            "time": "2024-09-12T02:21:33+00:00"
         }
     ],
     "packages-dev": [

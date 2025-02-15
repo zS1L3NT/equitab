@@ -6,16 +6,11 @@ use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
 use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Zing\LaravelEloquentRelationships\HasMoreRelationships;
-use Zing\LaravelEloquentRelationships\Relations\BelongsToOne;
 
-/**
- * @property \App\Models\User $payer
- */
 class Transaction extends Model
 {
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
-    use HasFactory, HasSoftRelationships, HasMoreRelationships;
+    use HasFactory, HasSoftRelationships;
 
     protected $fillable = [
         'name',
@@ -40,7 +35,6 @@ class Transaction extends Model
     public function setPayerAttribute(array $payer)
     {
         if ($this->id) {
-            $this->payer()->sync([$payer['id']]);
         }
     }
 
@@ -56,10 +50,9 @@ class Transaction extends Model
         }
     }
 
-    public function payer(): BelongsToOne
+    public function payer()
     {
-        return $this->belongsToOne(User::class, 'transaction_payer', 'transaction_id', 'payer_id')
-            ->withPivot('aggregate');
+        return $this->belongsTo(User::class);
     }
 
     public function owers(): BelongsToManySoft
