@@ -111,13 +111,13 @@ namespace App\Models{
 /**
  * 
  *
+ * @property \App\Models\User $payer
  * @property int $id
  * @property int $ledger_id
  * @property string $name
  * @property string|null $location
  * @property \Illuminate\Support\Carbon $datetime
  * @property int|null $category_id
- * @property int $payer_id
  * @property string $cost
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -125,10 +125,10 @@ namespace App\Models{
  * @property-read \App\Models\Ledger $ledger
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $owers
  * @property-read int|null $owers_count
- * @property-read \App\Models\User $payer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
  * @property-write mixed $ower_ids
+ * @property-write mixed $payer_id
  * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newQuery()
@@ -141,7 +141,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereLedgerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction wherePayerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereUpdatedAt($value)
  */
 	class Transaction extends \Eloquent {}

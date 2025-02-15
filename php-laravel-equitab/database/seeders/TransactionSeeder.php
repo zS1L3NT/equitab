@@ -23,6 +23,7 @@ class TransactionSeeder extends Seeder
 
             foreach ($ledger->transactions as $transaction) {
                 $count = fake()->numberBetween(static::PRODUCT_OWERS_MIN, $ledger->users->count());
+                $transaction->payer()->attach($ledger->users->random());
                 $transaction->owers()->attach($ledger->users->random($count));
             }
         }
