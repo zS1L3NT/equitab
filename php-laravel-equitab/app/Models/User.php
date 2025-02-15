@@ -45,26 +45,26 @@ class User extends Authenticatable
 
     public function friends(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id');
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id')
+            ->latest('friendships.created_at');
     }
 
     public function outgoing_friends(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'friend_requests', 'from_user_id', 'to_user_id');
+        return $this->belongsToMany(User::class, 'friend_requests', 'from_user_id', 'to_user_id')
+            ->latest('friendships.created_at');
     }
 
     public function incoming_friends(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'friend_requests', 'to_user_id', 'from_user_id');
+        return $this->belongsToMany(User::class, 'friend_requests', 'to_user_id', 'from_user_id')
+            ->latest();
     }
 
     public function ledgers(): BelongsToManySoft
     {
-        return $this->belongsToMany(Ledger::class)->withSoftDeletes();
-    }
-
-    public function products()
-    {
-        return $this->hasMany(Product::class, 'ower_id');
+        return $this->belongsToMany(Ledger::class)
+            ->latest('updated_at')
+            ->withSoftDeletes();
     }
 }
