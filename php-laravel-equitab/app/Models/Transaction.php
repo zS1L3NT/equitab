@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Observers\TransactionObserver;
 use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
 use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([TransactionObserver::class])]
 class Transaction extends Model
 {
     /** @use HasFactory<\Database\Factories\TransactionFactory> */

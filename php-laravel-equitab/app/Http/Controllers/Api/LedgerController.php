@@ -32,6 +32,7 @@ class LedgerController extends Controller
         $ledger = DB::transaction(function () use ($data) {
             $ledger = Ledger::create($data);
             $ledger->updateQuietly(['users' => $data['users']]);
+            $ledger->refresh();
             return $ledger;
         });
         
@@ -60,6 +61,7 @@ class LedgerController extends Controller
         ]);
 
         $ledger->update($data);
+        $ledger->refresh();
 
         return [
             'message' => 'Ledger updated.',

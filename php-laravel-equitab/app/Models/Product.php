@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\ProductObserver;
 use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
 use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
+#[ObservedBy([ProductObserver::class])]
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */

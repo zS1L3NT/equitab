@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\TransactionChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Models\Ledger;
 use App\Models\Transaction;
-use App\Rules\IsTransactionOwerAggregatesEqualToCost;
+use App\Rules\DoTransactionOwerAggregatesCancelOutCost;
 use App\Rules\HasNoProducts;
 use App\Rules\IsLedgerUserId;
 use Illuminate\Http\Request;
@@ -27,21 +26,22 @@ class TransactionController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string',
-            'cost' => 'required|decimal:0,4',
+            'cost' => 'required|decimal:0,4|min:0',
             'location' => 'string',
             'datetime' => 'required|date',
             'category_id' => 'required|exists:categories,id',
             'payer' => 'required|array',
             'payer.id' => ['required', 'integer', new IsLedgerUserId],
-            'owers' => ['required', 'array', 'min:1', new IsTransactionOwerAggregatesEqualToCost],
+            'owers' => ['required', 'array', 'min:1', new DoTransactionOwerAggregatesCancelOutCost],
             'owers.*' => 'required|array',
             'owers.*.id' => ['required', 'integer', new IsLedgerUserId],
             'owers.*.aggregate' => 'required|decimal:0,4'
         ]);
 
-        $transaction = DB::transaction(function () use ($data, $ledger, &$transaction) {
+        $transaction = DB::transaction(function () use ($data, $ledger) {
             $transaction = $ledger->transactions()->create($data);
             $transaction->updateQuietly(['payer' => $data['payer'], 'owers' => $data['owers']]);
+            $transaction->refresh();
             return $transaction;
         });
 
@@ -64,19 +64,20 @@ class TransactionController extends Controller
     {
         $data = $request->validate([
             'name' => 'string',
-            'cost' => ['decimal:0,4', new HasNoProducts],
+            'cost' => ['decimal:0,4', 'min:0', new HasNoProducts],
             'location' => 'string',
             'datetime' => 'date',
             'category_id' => 'exists:categories,id',
             'payer' => 'array',
             'payer.id' => ['present_with:payer', 'integer', new IsLedgerUserId],
-            'owers' => ['array', 'min:1', new IsTransactionOwerAggregatesEqualToCost],
+            'owers' => ['array', 'min:1', new DoTransactionOwerAggregatesCancelOutCost],
             'owers.*' => 'present_with:owers|array',
             'owers.*.id' => ['present_with:owers', 'integer', new IsLedgerUserId],
             'owers.*.aggregate' => ['present_with:owers', 'decimal:0,4', new HasNoProducts]
         ]);
 
         $transaction->update($data);
+        $transaction->refresh();
 
         return [
             'message' => 'Transaction updated.',

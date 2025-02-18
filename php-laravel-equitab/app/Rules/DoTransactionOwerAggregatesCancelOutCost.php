@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsProductOwerAggregatesEqualToCost implements ValidationRule
+class DoTransactionOwerAggregatesCancelOutCost implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -14,11 +14,10 @@ class IsProductOwerAggregatesEqualToCost implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        /** @var \App\Models\Ledger $ledger */
+        $ledger = request()->route('ledger');
 
-        /** @var \App\Models\Product $product */
-        $product = request()->route('product');
-
-        if (!$product || !is_array($value)) {
+        if (!$ledger || !is_array($value)) {
             abort(500);
         }
 
@@ -26,10 +25,10 @@ class IsProductOwerAggregatesEqualToCost implements ValidationRule
             return;
         }
 
-        $cost = request('cost') ?: $product->cost;
+        $cost = request('cost') ?: $ledger->cost;
         $aggregates = array_sum(array_map(fn($o) => $o['aggregate'], $value));
-        if ($aggregates != $cost) {
-            $fail('The ower aggregates do not add up to the product cost!');
+        if (-$aggregates != $cost) {
+            $fail('The ower aggregates do not cancel out the transaction cost!');
         }
     }
 }
