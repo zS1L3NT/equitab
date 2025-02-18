@@ -46,10 +46,8 @@ class Transaction extends Model
 
         if ($this->id) {
             $this->owers()->sync($owers->pluck('id')->toArray());
-
-            foreach ($this->owers as $ower) {
-                $aggregate = $owers->where('id', $ower->id)->first()['aggregate'];
-                $ower->pivot->update(compact('aggregate'));
+            foreach ($owers as $ower) {
+                $this->owers()->updateExistingPivot($ower->id, ['aggregate' => $ower->aggregate]);
             }
         }
     }
