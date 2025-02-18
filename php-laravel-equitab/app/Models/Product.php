@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
+use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory, \Znck\Eloquent\Traits\BelongsToThrough;
+    use HasFactory, HasSoftRelationships, BelongsToThrough;
 
     public $timestamps = false;
 
@@ -17,7 +20,7 @@ class Product extends Model
         'index',
         'quantity',
         'cost',
-        'ower_ids'
+        'owers'
     ];
 
     protected $touches = [
@@ -33,16 +36,24 @@ class Product extends Model
         return round($this->cost * $this->quantity * 100, 2);
     }
 
-    public function setOwerIdsAttribute(array $owerIds)
+    public function setOwersAttribute(array $owers)
     {
+        $owers = collect($owers);
+
         if ($this->id) {
-            $this->owers()->sync($owerIds);
+            $this->owers()->sync($owers->pluck('id')->toArray());
+
+            foreach ($this->owers as $ower) {
+                $aggregate = $owers->where('id', $ower->id)->first()['aggregate'];
+                $ower->pivot->update(compact('aggregate'));
+            }
         }
     }
 
     public function owers()
     {
-        return $this->belongsToMany(User::class, 'product_ower', 'product_id', 'ower_id');
+        return $this->belongsToMany(User::class, 'product_ower', 'product_id', 'ower_id')
+            ->withPivot('aggregate');
     }
 
     public function transaction()

@@ -34,18 +34,18 @@ class Transaction extends Model
 
     public function setPayerAttribute(array $payer)
     {
-        if ($this->id) {
-            $this->update(['payer_id' => $payer['id']]);
-        }
+        $this->payer_id = $payer['id'];
     }
 
     public function setOwersAttribute(array $owers)
     {
+        $owers = collect($owers);
+
         if ($this->id) {
-            $this->owers()->sync(array_map(fn($o) => $o['id'], $owers));
+            $this->owers()->sync($owers->pluck('id')->toArray());
 
             foreach ($this->owers as $ower) {
-                $aggregate = array_filter($owers, fn($o) => $o['id'] == $ower->id)[0]['aggregate'];
+                $aggregate = $owers->where('id', $ower->id)->first()['aggregate'];
                 $ower->pivot->update(compact('aggregate'));
             }
         }
@@ -59,9 +59,7 @@ class Transaction extends Model
     public function owers(): BelongsToManySoft
     {
         return $this->belongsToMany(User::class, 'transaction_ower', 'transaction_id', 'ower_id')
-            ->withPivot('aggregate')
-            ->withSoftDeletes()
-            ->withTrashedPivots();
+            ->withPivot('aggregate');
     }
 
     public function ledger()
