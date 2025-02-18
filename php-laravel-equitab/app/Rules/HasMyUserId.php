@@ -18,7 +18,7 @@ class HasMyUserId implements ValidationRule
             abort(500);
         }
 
-        if (!array_key_exists(auth()->id(), $value)) {
+        if (!in_array(auth()->id(), array_map(fn($u) => $u['id'], $value))) {
             $fail('Your user id must be present.');
         }
     }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LedgerResource;
-use App\Events\LedgerChanged;
 use App\Models\Ledger;
 use App\Rules\HasMyUserId;
 use App\Rules\IsUserIdMyFriend;
@@ -26,20 +25,16 @@ class LedgerController extends Controller
             'currency_code' => 'required|exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
             'users' => ['required', 'array', 'min:1', new HasMyUserId],
-            'users.*' => ['required', 'array'],
+            'users.*' => 'required|array',
             'users.*.id' => ['required', 'integer', new IsUserIdMyFriend],
         ]);
 
         $ledger = DB::transaction(function () use ($data) {
             $ledger = Ledger::create($data);
-            $ledger->update(['users' => $data['users']]);
+            $ledger->updateQuietly(['users' => $data['users']]);
             return $ledger;
         });
-
-        $event = new LedgerChanged($ledger->id);
-        $event->new = json_decode($ledger->toJson(), true);
-        event($event);
-
+        
         return response([
             'message' => 'Ledger created.',
             'data' => new LedgerResource($ledger)
@@ -64,15 +59,7 @@ class LedgerController extends Controller
             'users.*.id' => ['present_with:users', 'integer', new IsUserIdMyFriend]
         ]);
 
-        $event = new LedgerChanged($ledger->id);
-        $event->old = json_decode($ledger->toJson(), true);
-
         $ledger->update($data);
-
-        $ledger->refresh();
-        $event->new = json_decode($ledger->toJson(), true);
-        if ($event->old != $event->new)
-            event($event);
 
         return [
             'message' => 'Ledger updated.',
@@ -82,12 +69,7 @@ class LedgerController extends Controller
 
     public function destroy(Ledger $ledger)
     {
-        $event = new LedgerChanged($ledger->id);
-        $event->old = json_decode($ledger->toJson(), true);
-
         $ledger->delete();
-
-        event($event);
 
         return [
             'message' => 'Ledger deleted.'
