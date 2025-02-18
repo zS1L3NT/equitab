@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsLedgerUserAggregatesEqualToCost implements ValidationRule
+class IsTransactionOwerAggregatesEqualToCost implements ValidationRule
 {
     /**
      * Run the validation rule.

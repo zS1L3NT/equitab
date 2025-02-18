@@ -21,8 +21,8 @@ class HasNoProducts implements ValidationRule
             abort(500);
         }
 
-        if (isset($value) && $transaction->products()->exists()) {
-            $fail('This transaction\'s cost cannot be updated, the cost is calculated based on the products\' total cost.');
+        if (isset($value) && request()->exists('owers') && $transaction->products()->exists()) {
+            $fail("The transaction's $attribute field cannot be updated, it is calculated based on the products.");
         }
     }
 }
