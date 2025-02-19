@@ -31,8 +31,8 @@ class LedgerController extends Controller
         ]);
 
         $ledger = Ledger::create($data);
-        $ledger->refresh();
-        
+        $ledger->load('users');
+
         return response([
             'message' => 'Ledger created.',
             'data' => new LedgerResource($ledger)

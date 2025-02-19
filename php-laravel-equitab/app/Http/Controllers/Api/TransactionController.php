@@ -40,7 +40,6 @@ class TransactionController extends Controller
         ]);
 
         $transaction = $ledger->transactions()->create($data);
-        $transaction->refresh();
 
         return response([
             'message' => 'Transaction created.',

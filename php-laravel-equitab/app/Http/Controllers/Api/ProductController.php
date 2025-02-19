@@ -43,7 +43,6 @@ class ProductController extends Controller
         }
 
         $product = $transaction->products()->create($data);
-        $product->refresh();
 
         return response([
             'message' => 'Product created.',
