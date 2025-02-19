@@ -22,7 +22,8 @@ class LedgerController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string',
-            'currency_code' => 'required|exists:currencies,code',
+            'currency' => 'required|array',
+            'currency.code' => 'required|exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
             'users' => ['required', 'array', 'min:1', new HasMyUserId],
             'users.*' => 'required|array',
@@ -49,7 +50,8 @@ class LedgerController extends Controller
     {
         $data = $request->validate([
             'name' => 'string',
-            'currency_code' => 'exists:currencies,code',
+            'currency' => 'array',
+            'currency.code' => 'present_with:currency|exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
             'users' => 'array|min:1',
             'users.*' => 'present_with:users|array',

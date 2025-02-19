@@ -19,7 +19,7 @@ class Ledger extends Model
     protected $fillable = [
         'name',
         'picture',
-        'currency_code',
+        'currency',
         'users'
     ];
 
@@ -36,6 +36,11 @@ class Ledger extends Model
     public function setPictureAttribute(UploadedFile|string|null $picture): void
     {
         $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/ledgers/' . $this->id . '.png') : $picture;
+    }
+
+    public function setCurrencyAttribute(array $currency)
+    {
+        $this->currency_code = $currency['code'];
     }
 
     public function setUsersAttribute(array $users)
