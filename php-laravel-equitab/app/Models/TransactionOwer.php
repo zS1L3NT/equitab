@@ -11,6 +11,10 @@ class TransactionOwer extends Pivot
 {
     public $timestamps = null;
 
+    protected $casts = [
+        'aggregate' => 'float',
+    ];
+
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);

@@ -8,6 +8,10 @@ class LedgerUser extends Pivot
 {
     public $timestamps = null;
 
+    protected $casts = [
+        'aggregate' => 'float',
+    ];
+
     public function ledger()
     {
         return $this->belongsTo(Ledger::class);

@@ -28,8 +28,8 @@ class UserResource extends JsonResource
             $user['picture'] = $this->picture;
         }
 
-        if (isset($this->pivot)) {
-            $user['aggregate'] = $this->pivot->aggregate == null ? null : (float) $this->pivot->aggregate;
+        if (isset($this->pivot?->aggregate)) {
+            $user['aggregate'] = $this->pivot->aggregate;
         }
 
         return $user;

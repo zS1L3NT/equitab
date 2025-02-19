@@ -11,6 +11,10 @@ class ProductOwer extends Pivot
 {
     public $timestamps = null;
 
+    protected $casts = [
+        'aggregate' => 'float',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
