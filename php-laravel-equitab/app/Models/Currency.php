@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Currency extends Model
 {
-    public $timestamps = false;
+    public $timestamps = null;
     protected $primaryKey = 'code';
     public $incrementing = false;
+    protected $keyType = 'string';
 }

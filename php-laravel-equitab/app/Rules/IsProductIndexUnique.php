@@ -18,7 +18,7 @@ class IsProductIndexUnique implements ValidationRule
         $transaction = request()->route('transaction');
 
         if (!$transaction) {
-            abort(500);
+            return;
         }
 
         if ($transaction->products()->where('index', $value)->exists()) {

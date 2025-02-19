@@ -25,6 +25,7 @@ class TransactionResource extends JsonResource
             'owers' => UserResource::collection($this->owers),
             'ledger' => new LedgerResource($this->whenLoaded('ledger')),
             'products' => ProductResource::collection($this->whenLoaded('products')),
+            'product_count' => $this->whenCounted('products'),
         ];
     }
 }

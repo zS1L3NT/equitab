@@ -14,11 +14,24 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'id' => $this->id,
-            'username' => $this->username,
-            'phone_number' => $this->phone_number_verified_at ? $this->phone_number : null,
-            'picture' => $this->picture,
-        ];
+        $user = ['id' => $this->id];
+
+        /** @var \App\Models\Ledger $ledger */
+        $ledger = $request->route('ledger');
+
+        /**
+         * Mask away user information if the user has been removed from the ledger
+         */
+        if (!$ledger || $ledger->users->where('id', $this->id)->whereNull('pivot.deleted_at')->count() == 1) {
+            $user['username'] = $this->username;
+            $user['phone_number'] = $this->phone_number_verified_at ? $this->phone_number : null;
+            $user['picture'] = $this->picture;
+        }
+
+        if (isset($this->pivot?->aggregate)) {
+            $user['aggregate'] = $this->pivot->aggregate;
+        }
+
+        return $user;
     }
 }

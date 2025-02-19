@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsTransactionOwer implements ValidationRule
+class DoTransactionOwerAggregatesCancelOutCost implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -17,12 +17,14 @@ class IsTransactionOwer implements ValidationRule
         /** @var \App\Models\Transaction $transaction */
         $transaction = request()->route('transaction');
 
-        if (!$transaction) {
-            abort(500);
+        if (!is_array($value) || count(array_filter($value, fn($o) => !isset($o['id']) || !isset($o['aggregate']))) > 0) {
+            return;
         }
 
-        if ($transaction->owers()->where('users.id', $value)->doesntExist()) {
-            $fail('This user either doesn\'t exist or is not an ower of the transaction.');
+        $cost = $transaction?->cost ?: request('cost');
+        $aggregates = array_sum(array_map(fn($o) => $o['aggregate'], $value));
+        if (-$aggregates != $cost) {
+            $fail('The ower aggregates do not cancel out the transaction cost!');
         }
     }
 }

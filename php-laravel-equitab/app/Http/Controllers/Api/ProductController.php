@@ -8,8 +8,10 @@ use App\Models\Ledger;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Rules\IsProductIndexUnique;
-use App\Rules\IsTransactionOwer;
+use App\Rules\IsTransactionOwerId;
+use App\Rules\DoProductOwerAggregatesCancelOutCost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
@@ -25,15 +27,26 @@ class ProductController extends Controller
             'name' => 'required|string',
             'index' => ['required', 'integer', new IsProductIndexUnique],
             'quantity' => 'required|integer',
-            'cost' => 'required|decimal:0,4',
-            'ower_ids' => 'required|array|min:1',
-            'ower_ids.*' => ['required', 'integer', new IsTransactionOwer],
+            'cost' => 'required|decimal:0,4|min:0',
+            'owers' => ['required', 'array', 'min:1', new DoProductOwerAggregatesCancelOutCost],
+            'owers.*' => 'required|array',
+            'owers.*.id' => ['required', 'integer', new IsTransactionOwerId],
+            'owers.*.aggregate' => 'required|decimal:0,4'
         ]);
 
-        $transaction->products()->create($data)->owers()->sync($data['ower_ids']);
+        // Reset cost and transaction ower aggregates before adding first product
+        if ($transaction->products()->doesntExist()) {
+            $transaction->update([
+                'cost' => 0,
+                'owers' => $transaction->owers->map(fn($o) => ['id' => $o['id'], 'aggregate' => 0])->toArray()
+            ]);
+        }
+
+        $product = $transaction->products()->create($data);
 
         return response([
-            'message' => 'Product created.'
+            'message' => 'Product created.',
+            'data' => new ProductResource($product)
         ], Response::HTTP_CREATED);
     }
 
@@ -52,15 +65,19 @@ class ProductController extends Controller
             'name' => 'string',
             'index' => ['integer', new IsProductIndexUnique],
             'quantity' => 'integer',
-            'cost' => 'decimal:0,4',
-            'ower_ids' => 'array|min:1',
-            'ower_ids.*' => ['integer', new IsTransactionOwer],
+            'cost' => 'decimal:0,4|min:0',
+            'owers' => ['array', 'min:1', new DoProductOwerAggregatesCancelOutCost],
+            'owers.*' => 'present_with:owers|array',
+            'owers.*.id' => ['present_with:owers', 'integer', new IsTransactionOwerId],
+            'owers.*.aggregate' => 'present_with:owers|decimal:0,4'
         ]);
 
         $product->update($data);
+        $product->refresh();
 
         return [
             'message' => 'Product updated.',
+            'data' => new ProductResource($product)
         ];
     }
 

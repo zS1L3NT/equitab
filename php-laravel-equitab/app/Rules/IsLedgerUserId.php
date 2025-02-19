@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsLedgerUser implements ValidationRule
+class IsLedgerUserId implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -18,7 +18,7 @@ class IsLedgerUser implements ValidationRule
         $ledger = request()->route('ledger');
 
         if (!$ledger) {
-            abort(500);
+            return;
         }
 
         if ($ledger->users()->where('users.id', $value)->doesntExist()) {

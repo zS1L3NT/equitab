@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,10 +26,13 @@ class AuthController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        $user = auth()->user();
+
         return [
             'message' => 'Logged in successfully.',
             'data' => [
-                'token' => auth()->user()->createToken($request->device_name . " @ " . $request->ip())->plainTextToken,
+                'token' => $user->createToken($request->device_name . " @ " . $request->ip())->plainTextToken,
+                'user' => new UserResource($user),
             ]
         ];
     }

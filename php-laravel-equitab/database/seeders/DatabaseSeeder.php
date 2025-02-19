@@ -16,9 +16,9 @@ class DatabaseSeeder extends Seeder
             FriendshipSeeder::class,
             CurrencySeeder::class,
             CategorySeeder::class,
-            LedgerSeeder::class,
-            TransactionSeeder::class,
-            ProductSeeder::class,
+            // LedgerSeeder::class,
+            // TransactionSeeder::class,
+            // ProductSeeder::class,
         ]);
     }
 }
