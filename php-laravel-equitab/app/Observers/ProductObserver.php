@@ -22,9 +22,9 @@ class ProductObserver
             $toaggregate = $product->transaction->owers()->find($ower->id)->pivot;
 
             if (!$undo) {
-                $toaggregate->increment('aggregate', $poaggregate);
+                $toaggregate->increment('aggregate', $poaggregate->aggregate);
             } else {
-                $toaggregate->decrement('aggregate', $poaggregate);
+                $toaggregate->decrement('aggregate', $poaggregate->aggregate);
             }
         }
     }

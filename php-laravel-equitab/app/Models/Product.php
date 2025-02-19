@@ -46,7 +46,7 @@ class Product extends Model
         if ($this->id) {
             $this->owers()->sync($owers->pluck('id')->toArray());
             foreach ($owers as $ower) {
-                $this->owers()->updateExistingPivot($ower->id, ['aggregate' => $ower->aggregate]);
+                $this->owers()->updateExistingPivot($ower['id'], ['aggregate' => $ower['aggregate']]);
             }
         }
     }

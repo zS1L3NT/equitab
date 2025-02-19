@@ -23,9 +23,9 @@ class TransactionObserver
             $luaggregate = $transaction->ledger->users()->find($ower->id)->pivot;
 
             if (!$undo) {
-                $luaggregate->increment('aggregate', $toaggregate);
+                $luaggregate->increment('aggregate', $toaggregate->aggregate);
             } else {
-                $luaggregate->decrement('aggregate', $toaggregate);
+                $luaggregate->decrement('aggregate', $toaggregate->aggregate);
             }
         }
     }
