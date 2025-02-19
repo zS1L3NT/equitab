@@ -18,7 +18,7 @@ class Transaction extends Model
         'cost',
         'location',
         'datetime',
-        'category_id',
+        'category',
         'payer',
         'owers'
     ];
@@ -33,6 +33,11 @@ class Transaction extends Model
         'cost' => 'float',
         'datetime' => 'datetime:c'
     ];
+
+    public function setCategoryAttribute(array $category)
+    {
+        $this->category_id = $category['id'];
+    }
 
     public function setPayerAttribute(array $payer)
     {
