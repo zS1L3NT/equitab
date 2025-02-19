@@ -58,11 +58,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $currency_code
  * @property-read \App\Models\Currency $currency
- * @property-write mixed $user_ids
+ * @property-write mixed $users
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
  * @property-read int|null $transactions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
- * @property-read int|null $users_count
  * @method static \Database\Factories\LedgerFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ledger newQuery()
@@ -81,6 +79,27 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $ledger_id
+ * @property int $user_id
+ * @property string|null $deleted_at
+ * @property string $aggregate
+ * @property-read \App\Models\Ledger $ledger
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LedgerUser newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LedgerUser newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LedgerUser query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LedgerUser whereAggregate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LedgerUser whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LedgerUser whereLedgerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LedgerUser whereUserId($value)
+ */
+	class LedgerUser extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property int $transaction_id
  * @property string $name
@@ -88,9 +107,9 @@ namespace App\Models{
  * @property int $quantity
  * @property string $cost
  * @property-read mixed $total_cost
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $owers
+ * @property-read \App\Models\ProductOwer|null $pivot
+ * @property \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $owers
  * @property-read int|null $owers_count
- * @property-write mixed $ower_ids
  * @property-read \App\Models\Transaction $transaction
  * @property-read \App\Models\Ledger|null $ledger
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
@@ -111,6 +130,25 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $product_id
+ * @property int $ower_id
+ * @property string $aggregate
+ * @property-read \App\Models\User $ower
+ * @property-read \App\Models\Product $product
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwer whereAggregate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwer whereOwerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwer whereProductId($value)
+ */
+	class ProductOwer extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property int $ledger_id
  * @property string $name
@@ -123,12 +161,12 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Category|null $category
  * @property-read \App\Models\Ledger $ledger
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $owers
+ * @property-read \App\Models\TransactionOwer|null $pivot
+ * @property \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $owers
  * @property-read int|null $owers_count
- * @property-read \App\Models\User $payer
+ * @property \App\Models\User $payer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
- * @property-write mixed $ower_ids
  * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newQuery()
@@ -145,6 +183,25 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereUpdatedAt($value)
  */
 	class Transaction extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $transaction_id
+ * @property int $ower_id
+ * @property string $aggregate
+ * @property-read \App\Models\User $ower
+ * @property-read \App\Models\Transaction $transaction
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionOwer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionOwer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionOwer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionOwer whereAggregate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionOwer whereOwerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionOwer whereTransactionId($value)
+ */
+	class TransactionOwer extends \Eloquent {}
 }
 
 namespace App\Models{

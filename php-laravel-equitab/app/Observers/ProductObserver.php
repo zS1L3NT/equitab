@@ -9,50 +9,28 @@ use App\Models\Product;
 
 class ProductObserver
 {
-    private function cascadeAggregation(Product $product, bool $undo = false)
-    {
-        if (!$undo) {
-            $product->transaction->payer->pivot->increment('aggregate', $product->cost);
-        } else {
-            $product->transaction->payer->pivot->decrement('aggregate', $product->cost);
-        }
-
-        foreach ($product->owers as $ower) {
-            $poaggregate = $ower->pivot;
-            $toaggregate = $product->transaction->owers()->find($ower->id)->pivot;
-
-            if (!$undo) {
-                $toaggregate->increment('aggregate', $poaggregate->aggregate);
-            } else {
-                $toaggregate->decrement('aggregate', $poaggregate->aggregate);
-            }
-        }
-    }
-
     public function created(Product $product): void
     {
         $product->updateQuietly(request(['owers']));
 
-        $this->cascadeAggregation($product);
+        $product->transaction()->increment('cost', $product->cost);
 
         event(new ProductCreated($product));
     }
 
     public function updating(Product $product): void
     {
-        $this->cascadeAggregation($product, true);
+        $product->transaction()->increment('cost', $product->cost - $product->getOriginal()['cost']);
     }
 
     public function updated(Product $product): void
     {
-        $this->cascadeAggregation($product);
-
         event(new ProductUpdated($product));
     }
 
     public function deleted(Product $product): void
     {
-        $this->cascadeAggregation($product, false);
+        $product->transaction()->decrement('cost', $product->cost);
 
         event(new ProductDeleted($product));
     }

@@ -52,7 +52,7 @@ class Ledger extends Model
 
     public function users(): BelongsToManySoft
     {
-        return $this->belongsToMany(User::class)
+        return $this->belongsToMany(User::class, LedgerUser::class)
             ->withPivot('aggregate')
             ->withSoftDeletes()
             ->withTrashedPivots();

@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Observers\TransactionObserver;
-use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
-use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
-    use HasFactory, HasSoftRelationships;
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -32,6 +30,7 @@ class Transaction extends Model
     ];
 
     protected $casts = [
+        'cost' => 'float',
         'datetime' => 'datetime:c'
     ];
 
@@ -42,13 +41,8 @@ class Transaction extends Model
 
     public function setOwersAttribute(array $owers)
     {
-        $owers = collect($owers);
-
         if ($this->id) {
-            $this->owers()->sync($owers->pluck('id')->toArray());
-            foreach ($owers as $ower) {
-                $this->owers()->updateExistingPivot($ower['id'], ['aggregate' => $ower['aggregate']]);
-            }
+            $this->owers()->sync(collect($owers)->mapWithKeys(fn($o) => [$o['id'] => ['aggregate' => $o['aggregate']]])->toArray());
         }
     }
 
@@ -57,9 +51,9 @@ class Transaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function owers(): BelongsToManySoft
+    public function owers()
     {
-        return $this->belongsToMany(User::class, 'transaction_ower', 'transaction_id', 'ower_id')
+        return $this->belongsToMany(User::class, TransactionOwer::class, 'transaction_id', 'ower_id')
             ->withPivot('aggregate');
     }
 
