@@ -34,6 +34,14 @@ class ProductController extends Controller
             'owers.*.aggregate' => 'required|decimal:0,4'
         ]);
 
+        // Reset cost and transaction ower aggregates before adding first product
+        if ($transaction->products()->doesntExist()) {
+            $transaction->update([
+                'cost' => 0,
+                'owers' => $transaction->owers->map(fn($o) => ['id' => $o['id'], 'aggregate' => 0])->toArray()
+            ]);
+        }
+
         $product = $transaction->products()->create($data);
         $product->refresh();
 
@@ -67,8 +75,6 @@ class ProductController extends Controller
 
         $product->update($data);
         $product->refresh();
-
-        $product->unsetRelation('transaction');
 
         return [
             'message' => 'Product updated.',

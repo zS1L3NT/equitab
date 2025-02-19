@@ -18,7 +18,7 @@ class IsUserIdMyFriend implements ValidationRule
         $user = auth()->user();
 
         if (!$user) {
-            abort(500);
+            return;
         }
 
         if ($user->id != $value && $user->friends()->where('friend_id', $value)->doesntExist()) {

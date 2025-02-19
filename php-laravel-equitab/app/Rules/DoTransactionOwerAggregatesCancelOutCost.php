@@ -14,18 +14,14 @@ class DoTransactionOwerAggregatesCancelOutCost implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        /** @var \App\Models\Ledger $ledger */
-        $ledger = request()->route('ledger');
+        /** @var \App\Models\Transaction $transaction */
+        $transaction = request()->route('transaction');
 
-        if (!$ledger || !is_array($value)) {
-            abort(500);
-        }
-
-        if (count(array_filter($value, fn($o) => !isset($o['id']) || !isset($o['aggregate']))) > 0) {
+        if (!is_array($value) || count(array_filter($value, fn($o) => !isset($o['id']) || !isset($o['aggregate']))) > 0) {
             return;
         }
 
-        $cost = request('cost') ?: $ledger->cost;
+        $cost = $transaction?->cost ?: request('cost');
         $aggregates = array_sum(array_map(fn($o) => $o['aggregate'], $value));
         if (-$aggregates != $cost) {
             $fail('The ower aggregates do not cancel out the transaction cost!');

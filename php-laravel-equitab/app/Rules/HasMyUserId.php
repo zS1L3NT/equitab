@@ -15,7 +15,7 @@ class HasMyUserId implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_array($value) || !auth()->id()) {
-            abort(500);
+            return;
         }
 
         if (!in_array(auth()->id(), array_map(fn($u) => $u['id'], $value))) {

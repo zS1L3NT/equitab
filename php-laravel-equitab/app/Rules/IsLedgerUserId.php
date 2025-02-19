@@ -18,7 +18,7 @@ class IsLedgerUserId implements ValidationRule
         $ledger = request()->route('ledger');
 
         if (!$ledger) {
-            abort(500);
+            return;
         }
 
         if ($ledger->users()->where('users.id', $value)->doesntExist()) {

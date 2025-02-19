@@ -18,7 +18,7 @@ class HasNoProducts implements ValidationRule
         $transaction = request()->route('transaction');
 
         if (!$transaction) {
-            abort(500);
+            return;
         }
 
         if (isset($value) && request()->exists('owers') && $transaction->products()->exists()) {

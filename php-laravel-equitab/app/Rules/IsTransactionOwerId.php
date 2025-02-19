@@ -18,7 +18,7 @@ class IsTransactionOwerId implements ValidationRule
         $transaction = request()->route('transaction');
 
         if (!$transaction) {
-            abort(500);
+            return;
         }
 
         if ($transaction->owers()->where('users.id', $value)->doesntExist()) {
