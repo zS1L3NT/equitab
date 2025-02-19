@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsMyFriend implements ValidationRule
+class IsUserIdMyFriend implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -18,7 +18,7 @@ class IsMyFriend implements ValidationRule
         $user = auth()->user();
 
         if (!$user) {
-            abort(500);
+            return;
         }
 
         if ($user->id != $value && $user->friends()->where('friend_id', $value)->doesntExist()) {

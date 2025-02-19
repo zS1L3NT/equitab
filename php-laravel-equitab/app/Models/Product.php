@@ -2,38 +2,56 @@
 
 namespace App\Models;
 
+use App\Observers\ProductObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
+#[ObservedBy([ProductObserver::class])]
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory, \Znck\Eloquent\Traits\BelongsToThrough;
+    use HasFactory, BelongsToThrough;
 
-    public $timestamps = false;
+    public $timestamps = null;
 
     protected $fillable = [
         'name',
         'index',
         'quantity',
         'cost',
-        'ower_ids'
+        'owers'
+    ];
+
+    protected $touches = [
+        'transaction'
     ];
 
     protected $with = [
         'owers',
     ];
 
-    public function setOwerIdsAttribute(array $owerIds)
+    protected $casts = [
+        'cost' => 'float',
+    ];
+
+    public function getTotalCostAttribute()
+    {
+        return round($this->cost * $this->quantity * 100, 2);
+    }
+
+    public function setOwersAttribute(array $owers)
     {
         if ($this->id) {
-            $this->owers()->sync($owerIds);
+            $this->owers()->sync(collect($owers)->mapWithKeys(fn($o) => [$o['id'] => ['aggregate' => $o['aggregate']]])->toArray());
         }
     }
 
     public function owers()
     {
-        return $this->belongsToMany(User::class, 'product_ower', 'product_id', 'ower_id');
+        return $this->belongsToMany(User::class, ProductOwer::class, 'product_id', 'ower_id')
+            ->withPivot('aggregate');
     }
 
     public function transaction()

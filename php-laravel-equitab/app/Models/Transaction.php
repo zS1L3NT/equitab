@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Observers\TransactionObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([TransactionObserver::class])]
 class Transaction extends Model
 {
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
@@ -15,9 +18,9 @@ class Transaction extends Model
         'cost',
         'location',
         'datetime',
-        'category_id',
-        'payer_id',
-        'ower_ids'
+        'category',
+        'payer',
+        'owers'
     ];
 
     protected $with = [
@@ -27,13 +30,24 @@ class Transaction extends Model
     ];
 
     protected $casts = [
+        'cost' => 'float',
         'datetime' => 'datetime:c'
     ];
 
-    public function setOwerIdsAttribute(array $owerIds)
+    public function setCategoryAttribute(array $category)
+    {
+        $this->category_id = $category['id'];
+    }
+
+    public function setPayerAttribute(array $payer)
+    {
+        $this->payer_id = $payer['id'];
+    }
+
+    public function setOwersAttribute(array $owers)
     {
         if ($this->id) {
-            $this->owers()->sync($owerIds);
+            $this->owers()->sync(collect($owers)->mapWithKeys(fn($o) => [$o['id'] => ['aggregate' => $o['aggregate']]])->toArray());
         }
     }
 
@@ -44,7 +58,8 @@ class Transaction extends Model
 
     public function owers()
     {
-        return $this->belongsToMany(User::class, 'transaction_ower', 'transaction_id', 'ower_id');
+        return $this->belongsToMany(User::class, TransactionOwer::class, 'transaction_id', 'ower_id')
+            ->withPivot('aggregate');
     }
 
     public function ledger()

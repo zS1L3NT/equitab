@@ -28,4 +28,6 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class)->only('index');
+
+    Route::apiResource('currencies', \App\Http\Controllers\Api\CurrencyController::class)->only('index');
 });

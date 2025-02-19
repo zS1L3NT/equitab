@@ -2,31 +2,35 @@
 
 namespace App\Models;
 
+use App\Observers\LedgerObserver;
+use DDZobov\PivotSoftDeletes\Concerns\HasRelationships as HasSoftRelationships;
+use DDZobov\PivotSoftDeletes\Relations\BelongsToManySoft;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 
+#[ObservedBy([LedgerObserver::class])]
 class Ledger extends Model
 {
     /** @use HasFactory<\Database\Factories\LedgerFactory> */
-    use HasFactory;
+    use HasFactory, HasSoftRelationships;
 
     protected $fillable = [
         'name',
         'picture',
-        'currency_code',
-        'user_ids'
+        'currency',
+        'users'
     ];
 
-    public function getSummaryAttribute()
-    {
-        // TODO Summarise the ledger for the current user
-        return 'Summary...';
-    }
+    protected $with = [
+        'currency',
+        'users',
+    ];
 
     public function getPictureAttribute(): string|null
     {
-        return $this->attributes['picture'] ? asset($this->attributes['picture']) : null;
+        return isset($this->attributes['picture']) ? asset($this->attributes['picture']) : null;
     }
 
     public function setPictureAttribute(UploadedFile|string|null $picture): void
@@ -34,10 +38,15 @@ class Ledger extends Model
         $this->attributes['picture'] = $picture instanceof UploadedFile ? '/' . $picture->storePubliclyAs('images/ledgers/' . $this->id . '.png') : $picture;
     }
 
-    public function setUserIdsAttribute(array $userIds)
+    public function setCurrencyAttribute(array $currency)
+    {
+        $this->currency_code = $currency['code'];
+    }
+
+    public function setUsersAttribute(array $users)
     {
         if ($this->id) {
-            $this->users()->sync($userIds);
+            $this->users()->sync(array_map(fn($u) => $u['id'], $users));
         }
     }
 
@@ -46,13 +55,17 @@ class Ledger extends Model
         return $this->belongsTo(Currency::class);
     }
 
-    public function users()
+    public function users(): BelongsToManySoft
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, LedgerUser::class)
+            ->withPivot('aggregate')
+            ->withSoftDeletes()
+            ->withTrashedPivots();
     }
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class)
+            ->latest('datetime');
     }
 }

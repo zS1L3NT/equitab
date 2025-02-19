@@ -14,7 +14,8 @@ return new class extends Migration {
         Schema::table('ledgers', function (Blueprint $table) {
             $table->dropColumn('currency');
 
-            $table->foreignIdFor(Currency::class)->constrained();
+            $table->string('currency_code');
+            $table->foreign('currency_code')->references('code')->on('currencies');
         });
     }
 

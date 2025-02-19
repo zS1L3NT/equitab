@@ -5,38 +5,42 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LedgerResource;
 use App\Models\Ledger;
-use App\Rules\IsMyFriend;
+use App\Rules\HasMyUserId;
+use App\Rules\IsUserIdMyFriend;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class LedgerController extends Controller
 {
     public function index()
     {
-        return LedgerResource::collection(auth()->user()->ledgers()->paginate());
+        return LedgerResource::collection(auth()->user()->ledgers()->withPivot('aggregate')->paginate());
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string',
-            'currency_code' => 'required|exists:currencies,code',
+            'currency' => 'required|array',
+            'currency.code' => 'required|exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'user_ids' => 'required|array|min:1',
-            'user_ids.*' => ['required', 'integer', new IsMyFriend]
+            'users' => ['required', 'array', 'min:1', new HasMyUserId],
+            'users.*' => 'required|array',
+            'users.*.id' => ['required', 'integer', new IsUserIdMyFriend],
         ]);
 
-        Ledger::create($data)->users()->sync($data['user_ids']);
+        $ledger = Ledger::create($data);
+        $ledger->load('users');
 
         return response([
-            'message' => 'Ledger created.'
+            'message' => 'Ledger created.',
+            'data' => new LedgerResource($ledger)
         ], Response::HTTP_CREATED);
     }
 
     public function show(Ledger $ledger)
     {
-        $ledger->load('users');
-
         return [
             'data' => new LedgerResource($ledger)
         ];
@@ -46,16 +50,20 @@ class LedgerController extends Controller
     {
         $data = $request->validate([
             'name' => 'string',
-            'currency_code' => 'exists:currencies,code',
+            'currency' => 'array',
+            'currency.code' => 'present_with:currency|exists:currencies,code',
             'picture' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'user_ids' => 'array|min:1',
-            'user_ids.*' => ['integer', new IsMyFriend]
+            'users' => 'array|min:1',
+            'users.*' => 'present_with:users|array',
+            'users.*.id' => ['present_with:users', 'integer', new IsUserIdMyFriend]
         ]);
 
         $ledger->update($data);
+        $ledger->refresh();
 
         return [
-            'message' => 'Ledger updated.'
+            'message' => 'Ledger updated.',
+            'data' => new LedgerResource($ledger)
         ];
     }
 

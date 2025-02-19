@@ -65,15 +65,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (Exception $e) {
-            if (app()->hasDebugModeEnabled()) {
-                return response([
-                    'error' => [
-                        'type' => 'Uncaught error',
-                        'class' => get_class($e),
-                        'message' => $e->getMessage()
-                    ]
-                ], Response::HTTP_INTERNAL_SERVER_ERROR);
-            } else {
+            if (!app()->hasDebugModeEnabled()) {
                 return response([
                     'error' => [
                         'type' => 'Server error',
