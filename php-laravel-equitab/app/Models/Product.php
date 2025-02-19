@@ -14,7 +14,7 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory, BelongsToThrough;
 
-    public $timestamps = false;
+    public $timestamps = null;
 
     protected $fillable = [
         'name',
