@@ -11,6 +11,8 @@ class LedgerObserver
 {
     public function created(Ledger $ledger): void
     {
+        $ledger->updateQuietly(request(['users']));
+
         event(new LedgerCreated($ledger));
     }
 

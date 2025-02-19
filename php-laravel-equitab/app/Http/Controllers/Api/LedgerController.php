@@ -29,12 +29,8 @@ class LedgerController extends Controller
             'users.*.id' => ['required', 'integer', new IsUserIdMyFriend],
         ]);
 
-        $ledger = DB::transaction(function () use ($data) {
-            $ledger = Ledger::create($data);
-            $ledger->updateQuietly(['users' => $data['users']]);
-            $ledger->refresh();
-            return $ledger;
-        });
+        $ledger = Ledger::create($data);
+        $ledger->refresh();
         
         return response([
             'message' => 'Ledger created.',

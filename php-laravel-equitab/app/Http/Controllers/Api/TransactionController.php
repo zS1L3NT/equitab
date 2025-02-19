@@ -38,12 +38,8 @@ class TransactionController extends Controller
             'owers.*.aggregate' => 'required|decimal:0,4'
         ]);
 
-        $transaction = DB::transaction(function () use ($data, $ledger) {
-            $transaction = $ledger->transactions()->create($data);
-            $transaction->updateQuietly(['payer' => $data['payer'], 'owers' => $data['owers']]);
-            $transaction->refresh();
-            return $transaction;
-        });
+        $transaction = $ledger->transactions()->create($data);
+        $transaction->refresh();
 
         return response([
             'message' => 'Transaction created.',

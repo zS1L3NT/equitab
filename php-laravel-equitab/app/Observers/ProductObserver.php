@@ -31,6 +31,8 @@ class ProductObserver
 
     public function created(Product $product): void
     {
+        $product->updateQuietly(request(['owers']));
+
         $this->cascadeAggregation($product);
 
         event(new ProductCreated($product));

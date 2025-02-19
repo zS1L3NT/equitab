@@ -32,6 +32,8 @@ class TransactionObserver
 
     public function created(Transaction $transaction): void
     {
+        $transaction->updateQuietly(request(['owers']));
+
         $this->cascadeAggregation($transaction);
 
         event(new TransactionCreated($transaction));

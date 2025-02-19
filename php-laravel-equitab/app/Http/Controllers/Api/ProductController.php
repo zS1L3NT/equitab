@@ -34,14 +34,8 @@ class ProductController extends Controller
             'owers.*.aggregate' => 'required|decimal:0,4'
         ]);
 
-        $product = DB::transaction(function () use ($data, $transaction) {
-            $product = $transaction->products()->create($data);
-            $product->updateQuietly(['owers' => $data['owers']]);
-            $product->refresh();
-            return $product;
-        });
-
-        $product->unsetRelation('transaction');
+        $product = $transaction->products()->create($data);
+        $product->refresh();
 
         return response([
             'message' => 'Product created.',
