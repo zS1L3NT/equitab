@@ -2,7 +2,6 @@
 
 namespace App\Observers;
 
-use App\Events\LedgerCreated;
 use App\Events\LedgerDeleted;
 use App\Events\LedgerUpdated;
 use App\Models\Ledger;
@@ -12,8 +11,6 @@ class LedgerObserver
     public function created(Ledger $ledger): void
     {
         $ledger->updateQuietly(request(['users']));
-
-        event(new LedgerCreated($ledger));
     }
 
     public function updated(Ledger $ledger): void
