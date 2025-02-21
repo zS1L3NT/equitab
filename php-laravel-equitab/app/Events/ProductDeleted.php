@@ -26,7 +26,7 @@ class ProductDeleted implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('ledgers.' . $this->product->ledger()->id()),
+            new PrivateChannel('ledgers.' . $this->product->ledger()->id() . '.transactions'),
         ];
     }
 

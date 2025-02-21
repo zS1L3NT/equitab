@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Observers\LedgerUserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+#[ObservedBy([LedgerUserObserver::class])]
 class LedgerUser extends Pivot
 {
     public $timestamps = null;
