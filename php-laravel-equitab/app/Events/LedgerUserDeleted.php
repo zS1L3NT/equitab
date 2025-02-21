@@ -2,8 +2,7 @@
 
 namespace App\Events;
 
-use App\Http\Resources\LedgerResource;
-use App\Models\Ledger;
+use App\Models\LedgerUser;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,32 +11,36 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class LedgerCreated implements ShouldBroadcast
+class LedgerUserDeleted implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Ledger $ledger)
+    public function __construct(public LedgerUser $pivot)
     {
         //
     }
 
     public function broadcastOn(): array
     {
-        return $this->ledger->users()->pluck('id')->map(fn($u) => new PrivateChannel('users.' . $u))->toArray();
+        return [
+            new PrivateChannel('users.' . $this->pivot->user_id),
+        ];
     }
 
     public function broadcastAs(): string
     {
-        return 'ledger.created';
+        return 'ledger.user.deleted';
     }
 
     public function broadcastWith(): array
     {
         return [
-            'ledger' => new LedgerResource($this->ledger)
+            'ledger' => [
+                'id' => $this->pivot->ledger_id
+            ]
         ];
     }
 }

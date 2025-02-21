@@ -2,8 +2,7 @@
 
 namespace App\Events;
 
-use App\Http\Resources\ProductResource;
-use App\Models\Product;
+use App\Models\LedgerUser;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,14 +11,14 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ProductUpdated implements ShouldBroadcast
+class LedgerUserCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Product $product)
+    public function __construct(public LedgerUser $pivot)
     {
         //
     }
@@ -27,19 +26,21 @@ class ProductUpdated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('ledgers.' . $this->product->ledger()->id() . '.transactions')
+            new PrivateChannel('users.' . $this->pivot->user_id),
         ];
     }
 
     public function broadcastAs(): string
     {
-        return 'product.updated';
+        return 'ledger.user.created';
     }
 
     public function broadcastWith(): array
     {
         return [
-            'product' => new ProductResource($this->product)
+            'ledger' => [
+                'id' => $this->pivot->ledger_id
+            ]
         ];
     }
 }

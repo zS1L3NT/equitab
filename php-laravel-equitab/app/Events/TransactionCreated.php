@@ -27,7 +27,7 @@ class TransactionCreated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('ledgers.' . $this->transaction->ledger_id),
+            new PrivateChannel('ledgers.' . $this->transaction->ledger_id . '.transactions'),
         ];
     }
 
