@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		04F1F6422D68C2E000729734 /* Ably in Frameworks */ = {isa = PBXBuildFile; productRef = 04F1F6412D68C2E000729734 /* Ably */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		0485926C2D281016000FF9D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -42,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04F1F6422D68C2E000729734 /* Ably in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +105,7 @@
 			);
 			name = equitab;
 			packageProductDependencies = (
+				04F1F6412D68C2E000729734 /* Ably */,
 			);
 			productName = equitab;
 			productReference = 048592592D281014000FF9D4 /* equitab.app */;
@@ -177,6 +183,9 @@
 			);
 			mainGroup = 048592502D281014000FF9D4;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				04F1F6402D68C2E000729734 /* XCRemoteSwiftPackageReference "ably-cocoa" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0485925A2D281014000FF9D4 /* Products */;
 			projectDirPath = "";
@@ -381,6 +390,7 @@
 				DEVELOPMENT_TEAM = 333543M9HG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Equitab;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -411,6 +421,7 @@
 				DEVELOPMENT_TEAM = 333543M9HG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Equitab;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -542,6 +553,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		04F1F6402D68C2E000729734 /* XCRemoteSwiftPackageReference "ably-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ably/ably-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.39;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		04F1F6412D68C2E000729734 /* Ably */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 04F1F6402D68C2E000729734 /* XCRemoteSwiftPackageReference "ably-cocoa" */;
+			productName = Ably;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 048592512D281014000FF9D4 /* Project object */;
 }
