@@ -10,6 +10,23 @@ import SwiftUI
 struct Equitab: View {
     @State private var selection: Tab = .ledgers
 
+    init() {
+        LoginOperation(
+            request: LoginRequest(username: "zS1L3NT", password: "P@ssw0r", deviceName: "iPhone 16")
+        ).execute { response in
+            switch response {
+            case .Data(let data):
+                print("Data: \(data)")
+            case .Error(let error):
+                print("Error: \(error)")
+            case .Pagination(let pagination):
+                print("Pagination: \(pagination)")
+            }
+
+            print("Response: \(response)")
+        }
+    }
+
     enum Tab {
         case ledgers
         case friends
