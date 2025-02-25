@@ -10,14 +10,14 @@ enum HttpMethod: String {
 }
 
 struct ApiErrorResponse: Error, Decodable {
-    let error: Data
+    let type: String
+    let message: String
+    let fields: [String: [String]]?
 
     init(type: String, message: String) {
-        self.error = Data(type: type, message: message, fields: nil)
-    }
-
-    init(type: String, message: String, fields: [String: [String]]) {
-        self.error = Data(type: type, message: message, fields: fields)
+        self.type = type
+        self.message = message
+        self.fields = nil
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -26,10 +26,13 @@ struct ApiErrorResponse: Error, Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        error = try! container.decode(Data.self, forKey: .error)
+        let error = try! container.decode(CustomError.self, forKey: .error)
+        type = error.type
+        message = error.message
+        fields = error.fields
     }
 
-    struct Data: Decodable {
+    struct CustomError: Decodable {
         let type: String
         let message: String
         let fields: [String: [String]]?
@@ -48,8 +51,7 @@ struct ApiErrorResponse: Error, Decodable {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             type = try container.decode(String.self, forKey: .type)
             message = try container.decode(String.self, forKey: .message)
-            fields = try container.decodeIfPresent(
-                [String: [String]].self, forKey: .fields)
+            fields = try container.decodeIfPresent([String: [String]].self, forKey: .fields)
         }
     }
 }
@@ -79,9 +81,9 @@ class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
     var path: String
 
     init(method: HttpMethod, path: String, request: RequestBody) {
-        self.request = request
         self.method = method
         self.path = path
+        self.request = request
     }
 
     func execute(
