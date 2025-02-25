@@ -9,6 +9,8 @@ enum HttpMethod: String {
     case delete = "delete"
 }
 
+struct ApiRequest: Encodable {}
+
 struct ApiErrorResponse: Error, Decodable {
     let type: String
     let message: String
@@ -75,10 +77,15 @@ struct ApiDataResponse<ResponseData: Decodable>: Decodable {
 }
 
 class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
-    var request: RequestBody
+    var request: RequestBody?
     var method: HttpMethod
     var headers: [String: String] = [:]
     var path: String
+
+    init(method: HttpMethod, path: String) {
+        self.method = method
+        self.path = path
+    }
 
     init(method: HttpMethod, path: String, request: RequestBody) {
         self.method = method
@@ -91,12 +98,15 @@ class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
             Void
     ) {
         var request = URLRequest(url: URL(string: API_URL + path)!)
-        request.httpBody = try! JSONEncoder().encode(self.request)
-        request.httpMethod = method.rawValue
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         for (key, value) in headers {
             request.addValue(value, forHTTPHeaderField: key)
+        }
+
+        request.httpMethod = method.rawValue
+        if let body = self.request {
+            request.httpBody = try! JSONEncoder().encode(body)
         }
 
         URLSession.shared.dataTask(with: request) { data, _, error in
