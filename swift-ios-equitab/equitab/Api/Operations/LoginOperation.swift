@@ -2,7 +2,7 @@ import Foundation
 
 final class LoginOperation: ApiOperation<LoginRequest, LoginResponse> {
     init(request: LoginRequest) {
-        super.init(method: .post, path: "/login", request: request)
+        super.init(method: .post, path: "/auth/login", request: request)
     }
 }
 

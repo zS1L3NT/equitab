@@ -12,18 +12,17 @@ struct Equitab: View {
 
     init() {
         LoginOperation(
-            request: LoginRequest(username: "zS1L3NT", password: "P@ssw0r", deviceName: "iPhone 16")
+            request: LoginRequest(
+                username: "zS1L3NT", password: "P@ssw0r",
+                deviceName: "iPhone 16"
+            )
         ).execute { response in
             switch response {
-            case .Data(let data):
+            case .success(let data):
                 print("Data: \(data)")
-            case .Error(let error):
+            case .failure(let error):
                 print("Error: \(error)")
-            case .Pagination(let pagination):
-                print("Pagination: \(pagination)")
             }
-
-            print("Response: \(response)")
         }
     }
 

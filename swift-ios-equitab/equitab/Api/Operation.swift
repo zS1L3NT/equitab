@@ -9,46 +9,55 @@ enum HttpMethod: String {
     case delete = "delete"
 }
 
-enum ApiResponse<ResponseData: Decodable>: Decodable {
-    case Error(ApiErrorResponse)
-    case Pagination(ApiPaginationResponse<ResponseData>)
-    case Data(ApiDataResponse<ResponseData>)
+struct ApiErrorResponse: Error, Decodable {
+    let error: Data
+
+    init(type: String, message: String) {
+        self.error = Data(type: type, message: message, fields: nil)
+    }
+
+    init(type: String, message: String, fields: [String: [String]]) {
+        self.error = Data(type: type, message: message, fields: fields)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case error
+    }
 
     init(from decoder: Decoder) throws {
-        let container = try! decoder.singleValueContainer()
-        if let error = try? container.decode(ApiErrorResponse.self) {
-            self = .Error(error)
-        } else if let pagination = try? container.decode(ApiPaginationResponse<ResponseData>.self) {
-            self = .Pagination(pagination)
-        } else if let data = try? container.decode(ApiDataResponse<ResponseData>.self) {
-            self = .Data(data)
-        } else {
-            fatalError("Invalid response")
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        error = try! container.decode(Data.self, forKey: .error)
+    }
+
+    struct Data: Decodable {
+        let type: String
+        let message: String
+        let fields: [String: [String]]?
+
+        private enum CodingKeys: String, CodingKey {
+            case type, message, fields
+        }
+
+        init(type: String, message: String, fields: [String: [String]]?) {
+            self.type = type
+            self.message = message
+            self.fields = fields
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            type = try container.decode(String.self, forKey: .type)
+            message = try container.decode(String.self, forKey: .message)
+            fields = try container.decodeIfPresent(
+                [String: [String]].self, forKey: .fields)
         }
     }
 }
 
-struct ApiErrorResponse: Decodable {
-    let error: Error
-
-    struct Error: Decodable {
-        let type: String
-        let message: String
-        let fields: [String: [String]]?
-    }
-
-    init(type: String, message: String) {
-        self.error = Error(type: type, message: message, fields: nil)
-    }
-
-    init(type: String, message: String, fields: [String: [String]]) {
-        self.error = Error(type: type, message: message, fields: fields)
-    }
-}
-
-struct ApiPaginationResponse<ResponseData: Decodable>: Decodable {
+struct ApiDataResponse<ResponseData: Decodable>: Decodable {
+    let message: String?
     let data: ResponseData
-    let meta: Meta
+    let meta: Meta?
 
     struct Meta: Decodable {
         let page: Int
@@ -61,11 +70,6 @@ struct ApiPaginationResponse<ResponseData: Decodable>: Decodable {
             case total
         }
     }
-}
-
-struct ApiDataResponse<ResponseData: Decodable>: Decodable {
-    let message: String?
-    let data: ResponseData
 }
 
 class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
@@ -81,7 +85,8 @@ class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
     }
 
     func execute(
-        completion: @Sendable @escaping (ApiResponse<ResponseData>) -> Void
+        completion: @Sendable @escaping (Result<ApiDataResponse<ResponseData>, ApiErrorResponse>) ->
+            Void
     ) {
         var request = URLRequest(url: URL(string: API_URL + path)!)
         request.httpBody = try! JSONEncoder().encode(self.request)
@@ -95,7 +100,7 @@ class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
         URLSession.shared.dataTask(with: request) { data, _, error in
             guard let data = data else {
                 return completion(
-                    .Error(
+                    .failure(
                         ApiErrorResponse(
                             type: "Unknown error",
                             message: error!.localizedDescription
@@ -104,20 +109,26 @@ class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
                 )
             }
 
-            guard
-                let response = try? JSONDecoder().decode(ApiResponse<ResponseData>.self, from: data)
-            else {
-                return completion(
-                    .Error(
-                        ApiErrorResponse(
-                            type: "Parsing error",
-                            message: String(data: data, encoding: .utf8) ?? ""
-                        )
-                    )
-                )
+            if let response = try? JSONDecoder().decode(
+                ApiDataResponse<ResponseData>.self, from: data)
+            {
+                return completion(.success(response))
             }
 
-            completion(response)
+            if let error = try? JSONDecoder().decode(
+                ApiErrorResponse.self, from: data)
+            {
+                return completion(.failure(error))
+            }
+
+            return completion(
+                .failure(
+                    ApiErrorResponse(
+                        type: "Unknown error",
+                        message: "An unknown error occurred"
+                    )
+                )
+            )
         }.resume()
     }
 }
