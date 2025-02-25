@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Ledger: Codable {
+final class Ledger: Codable {
     @Attribute(.unique) var id: Int
     var name: String
     var picture: String
@@ -21,7 +21,7 @@ class Ledger: Codable {
         case id, name, picture, aggregate, currency, users
     }
 
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)

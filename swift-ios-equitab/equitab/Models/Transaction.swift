@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Transaction: Codable {
+final class Transaction: Codable {
     @Attribute(.unique) var id: Int
     var name: String
     var cost: Double
@@ -27,7 +27,7 @@ class Transaction: Codable {
         case productCount = "product_count"
     }
 
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)

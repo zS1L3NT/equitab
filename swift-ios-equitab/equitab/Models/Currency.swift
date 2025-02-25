@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Currency: Codable {
+final class Currency: Codable {
     @Attribute(.unique) var code: String
     var name: String
     var symbol: String
@@ -19,7 +19,7 @@ class Currency: Codable {
         case code, name, symbol, decimals
     }
 
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         code = try container.decode(String.self, forKey: .code)
         name = try container.decode(String.self, forKey: .name)

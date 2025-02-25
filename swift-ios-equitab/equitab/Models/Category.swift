@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Category: Codable {
+final class Category: Codable {
     @Attribute(.unique) var id: Int
     var name: String
     var picture: String
@@ -18,7 +18,7 @@ class Category: Codable {
         case id, name, picture
     }
 
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
