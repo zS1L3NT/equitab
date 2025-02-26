@@ -1,8 +1,8 @@
 import Foundation
 
 final class LoginOperation: ApiOperation<LoginRequest, LoginResponse> {
-    init(request: LoginRequest) {
-        super.init(method: .post, path: "/auth/login", request: request)
+    init(request body: LoginRequest) {
+        super.init(method: .post, path: "/auth/login", body: body)
     }
 }
 
@@ -17,7 +17,7 @@ struct LoginRequest: Encodable {
     }
 }
 
-struct LoginResponse: Decodable {
+struct LoginResponse: ApiActionResponse, ApiDataResponse {
     let message: String
-    let user: User
+    let data: User
 }
