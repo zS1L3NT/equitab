@@ -58,37 +58,46 @@ struct ApiErrorResponse: Error, Decodable {
     }
 }
 
-struct ApiDataResponse<ResponseData: Decodable>: Decodable {
-    let message: String?
-    let data: ResponseData
-    let meta: Meta?
+protocol ApiActionResponse: Decodable {
+    var message: String { get }
+}
 
-    struct Meta: Decodable {
-        let page: Int
-        let pages: Int
-        let total: Int
+protocol ApiDataResponse: Decodable {
+    associatedtype Data = Decodable
+    var data: Data { get }
+}
 
-        private enum CodingKeys: String, CodingKey {
-            case page = "current_page"
-            case pages = "last_page"
-            case total
-        }
+protocol ApiPaginationResponse: Decodable {
+    associatedtype Item = Decodable
+    var data: [Item] { get }
+    var meta: ApiPaginationMeta { get }
+}
+
+struct ApiPaginationMeta: Decodable {
+    let page: Int
+    let pages: Int
+    let total: Int
+
+    private enum CodingKeys: String, CodingKey {
+        case page = "current_page"
+        case pages = "last_page"
+        case total
     }
 }
 
-class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
+class ApiOperation<Request: Encodable, Response: Decodable> {
     let method: HttpMethod
     let path: String
     let query: [String: String]?
     let headers: [String: String]?
-    let body: RequestBody?
+    let body: Request?
 
     init(
         method: HttpMethod,
         path: String,
         query: [String: String]? = nil,
         headers: [String: String]? = nil,
-        body: RequestBody? = nil
+        body: Request? = nil
     ) {
         self.method = method
         self.path = path
@@ -98,8 +107,7 @@ class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
     }
 
     func execute(
-        completion: @Sendable @escaping (Result<ApiDataResponse<ResponseData>, ApiErrorResponse>) ->
-            Void
+        completion: @Sendable @escaping (Result<Response, ApiErrorResponse>) -> Void
     ) {
         var components = URLComponents(
             url: URL(string: API_URL + path)!,
@@ -143,15 +151,11 @@ class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
                 )
             }
 
-            if let error = try? JSONDecoder().decode(
-                ApiErrorResponse.self, from: data)
-            {
+            if let error = try? JSONDecoder().decode(ApiErrorResponse.self, from: data) {
                 return completion(.failure(error))
             }
 
-            if let response = try? JSONDecoder().decode(
-                ApiDataResponse<ResponseData>.self, from: data)
-            {
+            if let response = try? JSONDecoder().decode(Response.self, from: data) {
                 return completion(.success(response))
             }
 
