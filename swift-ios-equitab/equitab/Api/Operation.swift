@@ -77,35 +77,57 @@ struct ApiDataResponse<ResponseData: Decodable>: Decodable {
 }
 
 class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
-    var request: RequestBody?
-    var method: HttpMethod
-    var headers: [String: String] = [:]
-    var path: String
+    let method: HttpMethod
+    let path: String
+    let query: [String: String]?
+    let headers: [String: String]?
+    let body: RequestBody?
 
-    init(method: HttpMethod, path: String) {
+    init(
+        method: HttpMethod,
+        path: String,
+        query: [String: String]? = nil,
+        headers: [String: String]? = nil,
+        body: RequestBody? = nil
+    ) {
         self.method = method
         self.path = path
-    }
-
-    init(method: HttpMethod, path: String, request: RequestBody) {
-        self.method = method
-        self.path = path
-        self.request = request
+        self.query = query
+        self.headers = headers
+        self.body = body
     }
 
     func execute(
         completion: @Sendable @escaping (Result<ApiDataResponse<ResponseData>, ApiErrorResponse>) ->
             Void
     ) {
-        var request = URLRequest(url: URL(string: API_URL + path)!)
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        for (key, value) in headers {
-            request.addValue(value, forHTTPHeaderField: key)
+        var components = URLComponents(
+            url: URL(string: API_URL + path)!,
+            resolvingAgainstBaseURL: false
+        )!
+
+        if let query = self.query {
+            components.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
         }
 
+        var request = URLRequest(url: components.url!)
         request.httpMethod = method.rawValue
-        if let body = self.request {
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+
+        if let query = self.query {
+            var components = URLComponents(string: API_URL + path)!
+            components.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
+            request.url = components.url
+        }
+
+        if let headers = self.headers {
+            for (key, value) in headers {
+                request.addValue(value, forHTTPHeaderField: key)
+            }
+        }
+
+        if let body = self.body {
             request.httpBody = try! JSONEncoder().encode(body)
         }
 
@@ -121,16 +143,16 @@ class ApiOperation<RequestBody: Encodable, ResponseData: Decodable> {
                 )
             }
 
-            if let response = try? JSONDecoder().decode(
-                ApiDataResponse<ResponseData>.self, from: data)
-            {
-                return completion(.success(response))
-            }
-
             if let error = try? JSONDecoder().decode(
                 ApiErrorResponse.self, from: data)
             {
                 return completion(.failure(error))
+            }
+
+            if let response = try? JSONDecoder().decode(
+                ApiDataResponse<ResponseData>.self, from: data)
+            {
+                return completion(.success(response))
             }
 
             return completion(
