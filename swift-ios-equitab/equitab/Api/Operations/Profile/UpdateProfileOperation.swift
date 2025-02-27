@@ -7,7 +7,7 @@ final class UpdateProfileOperation: ApiOperation<UpdateProfileRequest, UpdatePro
 }
 
 struct UpdateProfileRequest: MultipartFormData {
-    let keyedBy = UserCodingKeys.self
+    let keyedBy = User.CodingKeys.self
     let boundary = UUID().uuidString
 
     let id: Int

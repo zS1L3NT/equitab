@@ -2,16 +2,23 @@ import Foundation
 import SwiftData
 
 @Model
-final class User: Codable {
+final class User: Decodable {
     @Attribute(.unique) var id: Int
     var username: String?
     var phoneNumber: String?
     var picture: String?
-    var aggregate: Int?
+    var aggregate: Double?
 
-    private enum CodingKeys: String, CodingKey {
-        case id, username, picture, aggregate
+    struct Reference {
+        var id: Int
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, username
         case phoneNumber = "phone_number"
+        case picture, password
+        case passwordConfirmation = "password_confirmation"
+        case aggregate
     }
 
     init(from decoder: Decoder) throws {
@@ -20,14 +27,6 @@ final class User: Codable {
         username = try container.decodeIfPresent(String.self, forKey: .username)
         phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
         picture = try container.decodeIfPresent(String.self, forKey: .picture)
-        aggregate = try container.decodeIfPresent(Int.self, forKey: .aggregate)
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(username, forKey: .username)
-        try container.encode(phoneNumber, forKey: .phoneNumber)
-        try container.encode(picture, forKey: .picture)
+        aggregate = try container.decodeIfPresent(Double.self, forKey: .aggregate)
     }
 }

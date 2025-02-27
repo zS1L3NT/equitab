@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Transaction: Codable {
+final class Transaction: Decodable {
     @Attribute(.unique) var id: Int
     var name: String
     var cost: Double
@@ -15,7 +15,11 @@ final class Transaction: Codable {
     var products: [Product]?
     var productCount: Int?
 
-    private enum CodingKeys: String, CodingKey {
+    struct Reference {
+        var id: Int
+    }
+
+    enum CodingKeys: String, CodingKey {
         case id, name, cost, location, datetime, category, payer, owers, ledger, products
         case productCount = "product_count"
     }
@@ -33,20 +37,5 @@ final class Transaction: Codable {
         ledger = try container.decodeIfPresent(Ledger.self, forKey: .ledger)
         products = try container.decodeIfPresent([Product].self, forKey: .products)
         productCount = try container.decodeIfPresent(Int.self, forKey: .productCount)
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(name, forKey: .name)
-        try container.encode(cost, forKey: .cost)
-        try container.encode(location, forKey: .location)
-        try container.encode(datetime, forKey: .datetime)
-        try container.encode(category, forKey: .category)
-        try container.encode(payer, forKey: .payer)
-        try container.encode(owers, forKey: .owers)
-        try container.encode(ledger, forKey: .ledger)
-        try container.encode(products, forKey: .products)
-        try container.encode(productCount, forKey: .productCount)
     }
 }

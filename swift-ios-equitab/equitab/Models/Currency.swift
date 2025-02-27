@@ -2,13 +2,17 @@ import Foundation
 import SwiftData
 
 @Model
-final class Currency: Codable {
+final class Currency: Decodable {
     @Attribute(.unique) var code: String
     var name: String
     var symbol: String
     var decimals: Int
 
-    private enum CodingKeys: String, CodingKey {
+    struct Reference {
+        var code: String
+    }
+
+    enum CodingKeys: String, CodingKey {
         case code, name, symbol, decimals
     }
 
@@ -18,13 +22,5 @@ final class Currency: Codable {
         name = try container.decode(String.self, forKey: .name)
         symbol = try container.decode(String.self, forKey: .symbol)
         decimals = try container.decode(Int.self, forKey: .decimals)
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(code, forKey: .code)
-        try container.encode(name, forKey: .name)
-        try container.encode(symbol, forKey: .symbol)
-        try container.encode(decimals, forKey: .decimals)
     }
 }

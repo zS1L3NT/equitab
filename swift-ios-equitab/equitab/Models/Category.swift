@@ -2,12 +2,16 @@ import Foundation
 import SwiftData
 
 @Model
-final class Category: Codable {
+final class Category: Decodable {
     @Attribute(.unique) var id: Int
     var name: String
     var picture: String
 
-    private enum CodingKeys: String, CodingKey {
+    struct Reference {
+        var id: Int
+    }
+
+    enum CodingKeys: String, CodingKey {
         case id, name, picture
     }
 
@@ -16,12 +20,5 @@ final class Category: Codable {
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         picture = try container.decode(String.self, forKey: .picture)
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(name, forKey: .name)
-        try container.encode(picture, forKey: .picture)
     }
 }
