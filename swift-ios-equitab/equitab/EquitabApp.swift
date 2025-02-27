@@ -1,10 +1,3 @@
-//
-//  equitabApp.swift
-//  equitab
-//
-//  Created by Zechariah Tan on 3/1/25.
-//
-
 import SwiftData
 import SwiftUI
 

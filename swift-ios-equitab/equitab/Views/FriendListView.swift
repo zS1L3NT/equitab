@@ -1,10 +1,3 @@
-//
-//  FriendTabView.swift
-//  equitab
-//
-//  Created by Zechariah Tan on 4/1/25.
-//
-
 import SwiftUI
 
 struct FriendListView: View {

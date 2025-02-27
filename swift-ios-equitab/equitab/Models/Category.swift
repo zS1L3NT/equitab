@@ -1,10 +1,3 @@
-//
-//  Category.swift
-//  equitab
-//
-//  Created by Zechariah Tan on 23/2/25.
-//
-
 import Foundation
 import SwiftData
 
