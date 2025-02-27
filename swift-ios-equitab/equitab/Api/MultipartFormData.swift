@@ -8,7 +8,29 @@ protocol MultipartFormData {
 }
 
 extension MultipartFormData {
-    func toData() throws -> Data {
+    fileprivate func field(name: String, value: String) -> Data {
+        var data = Data()
+        data.append("Content-Disposition: form-data; name=\"\(name)\"")
+        data.append(.delimeter)
+        data.append(.delimeter)
+        data.append(value)
+        data.append(.delimeter)
+        return data
+    }
+
+    fileprivate func field(name: String, value: Data) -> Data {
+        var data = Data()
+        data.append(
+            "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(name)\""
+        )
+        data.append(.delimeter)
+        data.append(.delimeter)
+        data.append(value)
+        data.append(.delimeter)
+        return data
+    }
+
+    func toData(method: HttpMethod) throws -> Data {
         var data = Data()
 
         for child in Mirror(reflecting: self).children {
@@ -23,15 +45,15 @@ extension MultipartFormData {
             switch child.value {
             case _ as String?: ()
             case let value as String:
-                data.addFormField(name: key, value: value)
+                data.append(field(name: key, value: value))
 
             case _ as Data?: ()
             case let value as Data:
-                data.addFormField(name: key, value: value)
+                data.append(field(name: key, value: value))
 
             case _ as Int?: ()
             case let value as Int:
-                data.addFormField(name: key, value: String(value))
+                data.append(field(name: key, value: String(value)))
 
             default:
                 throw EncodingError.invalidValue(
@@ -43,6 +65,11 @@ extension MultipartFormData {
                 )
             }
         }
+
+        // Soft override HTTP Method
+        data.append("--\(boundary)--")
+        data.append(.delimeter)
+        data.append(field(name: "_method", value: "PUT"))
 
         data.append("--\(boundary)--")
         return data
@@ -56,23 +83,5 @@ extension String {
 extension Data {
     fileprivate mutating func append(_ string: String) {
         append(Data(string.utf8))
-    }
-
-    fileprivate mutating func addFormField(name: String, value: String) {
-        append("Content-Disposition: form-data; name=\"\(name)\"")
-        append(.delimeter)
-        append(.delimeter)
-        append(value)
-        append(.delimeter)
-    }
-
-    fileprivate mutating func addFormField(name: String, value: Data) {
-        append(
-            "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(name)\""
-        )
-        append(.delimeter)
-        append(.delimeter)
-        append(value)
-        append(.delimeter)
     }
 }

@@ -1,13 +1,21 @@
 import Foundation
 
-final class UpdateProfileOperation: ApiOperation<ApiRequest, UpdateProfileResponse> {
+final class UpdateProfileOperation: ApiOperation<UpdateProfileRequest, UpdateProfileResponse> {
     init(request body: UpdateProfileRequest) {
-        super.init(method: .put, path: "/profile")
+        super.init(method: .put, path: "/profile", body: body)
     }
 }
 
-struct UpdateProfileRequest: Encodable {
-    // TODO User update needs multipart/form-data
+struct UpdateProfileRequest: MultipartFormData {
+    let keyedBy = UserCodingKeys.self
+    let boundary = UUID().uuidString
+
+    let id: Int
+    let username: String?
+    let phoneNumber: String?
+    let picture: Data?
+    let password: String?
+    let passwordConfirmation: String?
 }
 
 struct UpdateProfileResponse: ApiActionResponse, ApiDataResponse {

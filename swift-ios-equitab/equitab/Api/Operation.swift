@@ -60,6 +60,11 @@ class ApiOperation<ApiRequest, ApiResponse: Decodable> {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
 
+        // Only HTTP POST can take FormData
+        if body is any MultipartFormData {
+            request.httpMethod = HttpMethod.post.rawValue
+        }
+
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         for (key, value) in headers {
             request.addValue(value, forHTTPHeaderField: key)
@@ -89,7 +94,8 @@ class ApiOperation<ApiRequest, ApiResponse: Decodable> {
                 forHTTPHeaderField: "Content-Type"
             )
             do {
-                request.httpBody = try formdata.toData()
+                // Pass in HTTP Method to soft override
+                request.httpBody = try formdata.toData(method: method)
             } catch let error {
                 return completion(
                     .failure(
