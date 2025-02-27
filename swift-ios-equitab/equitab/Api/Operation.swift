@@ -1,7 +1,5 @@
 import Foundation
 
-let API_URL = ProcessInfo.processInfo.environment["API_URL"]!
-
 enum HttpMethod: String {
     case get = "get"
     case post = "post"
@@ -9,95 +7,19 @@ enum HttpMethod: String {
     case delete = "delete"
 }
 
-struct ApiRequest: Encodable {}
-
-struct ApiErrorResponse: Error, Decodable {
-    let type: String
-    let message: String
-    let fields: [String: [String]]?
-
-    init(type: String, message: String) {
-        self.type = type
-        self.message = message
-        self.fields = nil
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case error
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let error = try! container.decode(CustomError.self, forKey: .error)
-        type = error.type
-        message = error.message
-        fields = error.fields
-    }
-
-    struct CustomError: Decodable {
-        let type: String
-        let message: String
-        let fields: [String: [String]]?
-
-        private enum CodingKeys: String, CodingKey {
-            case type, message, fields
-        }
-
-        init(type: String, message: String, fields: [String: [String]]?) {
-            self.type = type
-            self.message = message
-            self.fields = fields
-        }
-
-        init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            type = try container.decode(String.self, forKey: .type)
-            message = try container.decode(String.self, forKey: .message)
-            fields = try container.decodeIfPresent([String: [String]].self, forKey: .fields)
-        }
-    }
-}
-
-protocol ApiActionResponse: Decodable {
-    var message: String { get }
-}
-
-protocol ApiDataResponse: Decodable {
-    associatedtype Data = Decodable
-    var data: Data { get }
-}
-
-protocol ApiPaginationResponse: Decodable {
-    associatedtype Item = Decodable
-    var data: [Item] { get }
-    var meta: ApiPaginationMeta { get }
-}
-
-struct ApiPaginationMeta: Decodable {
-    let page: Int
-    let pages: Int
-    let total: Int
-
-    private enum CodingKeys: String, CodingKey {
-        case page = "current_page"
-        case pages = "last_page"
-        case total
-    }
-}
-
-class ApiOperation<Request: Encodable, Response: Decodable> {
+class ApiOperation<ApiRequest, ApiResponse: Decodable> {
     let method: HttpMethod
     let path: String
-    let query: [String: String]?
-    let headers: [String: String]?
-    let body: Request?
+    let query: [String: String]
+    let headers: [String: String]
+    let body: ApiRequest?
 
     init(
         method: HttpMethod,
         path: String,
-        query: [String: String]? = nil,
-        headers: [String: String]? = nil,
-        body: Request? = nil
+        query: [String: String] = [:],
+        headers: [String: String] = [:],
+        body: ApiRequest? = nil
     ) {
         self.method = method
         self.path = path
@@ -107,63 +29,116 @@ class ApiOperation<Request: Encodable, Response: Decodable> {
     }
 
     func execute(
-        completion: @Sendable @escaping (Result<Response, ApiErrorResponse>) -> Void
+        completion: @Sendable @escaping (Result<ApiResponse, ApiErrorResponse>) -> Void
     ) {
-        var components = URLComponents(
-            url: URL(string: API_URL + path)!,
-            resolvingAgainstBaseURL: false
-        )!
-
-        if let query = self.query {
-            components.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
+        guard let API_URL = ProcessInfo.processInfo.environment["API_URL"] else {
+            return completion(
+                .failure(
+                    ApiErrorResponse(
+                        type: "Client error",
+                        message: "Cannot find API URL in environment"
+                    )
+                )
+            )
         }
 
-        var request = URLRequest(url: components.url!)
+        guard
+            let url = URL(string: API_URL + path)?.appending(
+                queryItems: query.map { URLQueryItem(name: $0.key, value: $0.value) }
+            )
+        else {
+            return completion(
+                .failure(
+                    ApiErrorResponse(
+                        type: "Client error",
+                        message: "Failed to build URL"
+                    )
+                )
+            )
+        }
+
+        var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-
-        if let query = self.query {
-            var components = URLComponents(string: API_URL + path)!
-            components.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
-            request.url = components.url
+        for (key, value) in headers {
+            request.addValue(value, forHTTPHeaderField: key)
         }
 
-        if let headers = self.headers {
-            for (key, value) in headers {
-                request.addValue(value, forHTTPHeaderField: key)
+        switch body {
+        case let data as Encodable:
+            request.setValue(
+                "application/json",
+                forHTTPHeaderField: "Content-Type"
+            )
+            do {
+                request.httpBody = try JSONEncoder().encode(data)
+            } catch let error {
+                return completion(
+                    .failure(
+                        ApiErrorResponse(
+                            type: "Client error",
+                            message: "Failed to encode json data: \(error.localizedDescription)"
+                        )
+                    )
+                )
             }
-        }
-
-        if let body = self.body {
-            request.httpBody = try! JSONEncoder().encode(body)
+        case let formdata as any MultipartFormData:
+            request.setValue(
+                "multipart/form-data; boundary=\(formdata.boundary)",
+                forHTTPHeaderField: "Content-Type"
+            )
+            do {
+                request.httpBody = try formdata.toData()
+            } catch let error {
+                return completion(
+                    .failure(
+                        ApiErrorResponse(
+                            type: "Client error",
+                            message: "Failed to encode form data: \(error.localizedDescription)"
+                        )
+                    )
+                )
+            }
+        default:
+            return completion(
+                .failure(
+                    ApiErrorResponse(
+                        type: "Client error",
+                        message: "Unsupported body type"
+                    )
+                )
+            )
         }
 
         URLSession.shared.dataTask(with: request) { data, _, error in
-            guard let data = data else {
+            if let error {
                 return completion(
                     .failure(
                         ApiErrorResponse(
                             type: "Unknown error",
-                            message: error!.localizedDescription
+                            message: error.localizedDescription
                         )
                     )
                 )
             }
 
-            if let error = try? JSONDecoder().decode(ApiErrorResponse.self, from: data) {
-                return completion(.failure(error))
-            }
+            if let data {
+                if let error = try? JSONDecoder().decode(ApiErrorResponse.self, from: data) {
+                    return completion(.failure(error))
+                }
 
-            if let response = try? JSONDecoder().decode(Response.self, from: data) {
-                return completion(.success(response))
+                if let response = try? JSONDecoder().decode(ApiResponse.self, from: data) {
+                    return completion(.success(response))
+                }
             }
 
             return completion(
                 .failure(
                     ApiErrorResponse(
-                        type: "Unknown error",
-                        message: "An unknown error occurred"
+                        type: "Unknown API Response Schema",
+                        message:
+                            "The API Response did not match the expected response schema: \(String(data: data ?? Data(), encoding: .utf8) ?? "")"
                     )
                 )
             )
