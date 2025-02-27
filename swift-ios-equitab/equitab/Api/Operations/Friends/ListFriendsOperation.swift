@@ -1,6 +1,6 @@
 import Foundation
 
-final class ListFriendsOperation: ApiOperation<ApiRequest, ListFriendsResponse> {
+final class ListFriendsOperation: ApiOperation<ApiEmptyRequest, ListFriendsResponse> {
     init() {
         super.init(method: .get, path: "/friends")
     }

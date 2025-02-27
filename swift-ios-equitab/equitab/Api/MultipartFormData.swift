@@ -1,13 +1,13 @@
 import Foundation
 
 // Adapted from https://gist.github.com/msanford1540/e8b6e5e85dd4a79c3f4867ec472fc1c9
-protocol MultipartFormData {
+protocol ApiMultipartFormDataRequest: ApiRequest {
     associatedtype Key: CodingKey
     var keyedBy: Key.Type { get }
     var boundary: String { get }
 }
 
-extension MultipartFormData {
+extension ApiMultipartFormDataRequest {
     fileprivate func field(name: String, value: String) -> Data {
         var data = Data()
         data.append("Content-Disposition: form-data; name=\"\(name)\"")

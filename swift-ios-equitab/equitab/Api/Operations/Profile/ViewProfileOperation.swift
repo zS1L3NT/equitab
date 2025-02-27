@@ -1,6 +1,6 @@
 import Foundation
 
-final class ViewProfileOperation: ApiOperation<ApiRequest, ViewProfileResponse> {
+final class ViewProfileOperation: ApiOperation<ApiEmptyRequest, ViewProfileResponse> {
     init() {
         super.init(method: .get, path: "/profile")
     }

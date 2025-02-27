@@ -5,7 +5,7 @@ enum FriendRequestType: String {
     case outgoing
 }
 
-final class ListFriendRequestsOperation: ApiOperation<ApiRequest, ListFriendRequestsResponse> {
+final class ListFriendRequestsOperation: ApiOperation<ApiEmptyRequest, ListFriendRequestsResponse> {
     init(type: FriendRequestType) {
         super.init(method: .get, path: "/friends/requests", query: ["type": type.rawValue])
     }

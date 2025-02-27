@@ -1,6 +1,6 @@
 import Foundation
 
-final class AddFriendRequestOperation: ApiOperation<ApiRequest, AddFriendRequestResponse> {
+final class AddFriendRequestOperation: ApiOperation<ApiEmptyRequest, AddFriendRequestResponse> {
     init(id: Int) {
         super.init(method: .post, path: "/friends/requests/\(id)")
     }

@@ -7,19 +7,19 @@ enum HttpMethod: String {
     case delete = "delete"
 }
 
-class ApiOperation<ApiRequest, ApiResponse: Decodable> {
+class ApiOperation<Request: ApiRequest, Response: ApiResponse> {
     let method: HttpMethod
     let path: String
     let query: [String: String]
     let headers: [String: String]
-    let body: ApiRequest?
+    let body: Request?
 
     init(
         method: HttpMethod,
         path: String,
         query: [String: String] = [:],
         headers: [String: String] = [:],
-        body: ApiRequest? = nil
+        body: Request? = nil
     ) {
         self.method = method
         self.path = path
@@ -29,7 +29,7 @@ class ApiOperation<ApiRequest, ApiResponse: Decodable> {
     }
 
     func execute(
-        completion: @Sendable @escaping (Result<ApiResponse, ApiErrorResponse>) -> Void
+        completion: @Sendable @escaping (Result<Response, ApiErrorResponse>) -> Void
     ) {
         guard let API_URL = ProcessInfo.processInfo.environment["API_URL"] else {
             return completion(
@@ -61,7 +61,7 @@ class ApiOperation<ApiRequest, ApiResponse: Decodable> {
         request.httpMethod = method.rawValue
 
         // Only HTTP POST can take FormData
-        if body is any MultipartFormData {
+        if body is any ApiMultipartFormDataRequest {
             request.httpMethod = HttpMethod.post.rawValue
         }
 
@@ -88,7 +88,7 @@ class ApiOperation<ApiRequest, ApiResponse: Decodable> {
                     )
                 )
             }
-        case let formdata as any MultipartFormData:
+        case let formdata as any ApiMultipartFormDataRequest:
             request.setValue(
                 "multipart/form-data; boundary=\(formdata.boundary)",
                 forHTTPHeaderField: "Content-Type"
@@ -134,7 +134,7 @@ class ApiOperation<ApiRequest, ApiResponse: Decodable> {
                     return completion(.failure(error))
                 }
 
-                if let response = try? JSONDecoder().decode(ApiResponse.self, from: data) {
+                if let response = try? JSONDecoder().decode(Response.self, from: data) {
                     return completion(.success(response))
                 }
             }

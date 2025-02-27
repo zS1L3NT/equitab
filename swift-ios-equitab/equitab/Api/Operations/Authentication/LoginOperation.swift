@@ -6,7 +6,7 @@ final class LoginOperation: ApiOperation<LoginRequest, LoginResponse> {
     }
 }
 
-struct LoginRequest: Encodable {
+struct LoginRequest: ApiRequest {
     let username: String
     let password: String
     let deviceName: String

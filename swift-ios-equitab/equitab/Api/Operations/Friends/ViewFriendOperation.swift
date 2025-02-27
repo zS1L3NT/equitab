@@ -1,6 +1,6 @@
 import Foundation
 
-final class ViewFriendOperation: ApiOperation<ApiRequest, ViewFriendResponse> {
+final class ViewFriendOperation: ApiOperation<ApiEmptyRequest, ViewFriendResponse> {
     init(id: Int) {
         super.init(method: .get, path: "/friends/\(id)")
     }

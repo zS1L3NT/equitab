@@ -1,6 +1,6 @@
 import Foundation
 
-final class LogoutOperation: ApiOperation<ApiRequest, LogoutResponse> {
+final class LogoutOperation: ApiOperation<ApiEmptyRequest, LogoutResponse> {
     init() {
         super.init(method: .post, path: "/auth/logout")
     }

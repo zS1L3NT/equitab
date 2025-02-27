@@ -1,8 +1,12 @@
 import Foundation
 
-struct ApiRequest: Encodable {}
+protocol ApiRequest {}
 
-struct ApiErrorResponse: Error, Decodable {
+struct ApiEmptyRequest: ApiRequest {}
+
+protocol ApiResponse: Decodable {}
+
+struct ApiErrorResponse: ApiResponse, Error {
     let type: String
     let message: String
     let fields: [String: [String]]?
@@ -55,16 +59,16 @@ struct ApiErrorResponse: Error, Decodable {
     }
 }
 
-protocol ApiActionResponse: Decodable {
+protocol ApiActionResponse: ApiResponse {
     var message: String { get }
 }
 
-protocol ApiDataResponse: Decodable {
+protocol ApiDataResponse: ApiResponse {
     associatedtype Data = Decodable
     var data: Data { get }
 }
 
-protocol ApiPaginationResponse: Decodable {
+protocol ApiPaginationResponse: ApiResponse {
     associatedtype Item = Decodable
     var data: [Item] { get }
     var meta: ApiPaginationMeta { get }
