@@ -1,8 +1,8 @@
 import Foundation
 
 final class UpdateLedgerOperation: ApiOperation<UpdateLedgerRequest, UpdateLedgerResponse> {
-    init(id: Int, request body: UpdateLedgerRequest) {
-        super.init(method: .put, path: "/ledgers/\(id)", body: body)
+    init(ledgerId: Int, request body: UpdateLedgerRequest) {
+        super.init(method: .put, path: "/ledgers/\(ledgerId)", body: body)
     }
 }
 

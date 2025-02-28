@@ -1,8 +1,8 @@
 import Foundation
 
 final class RemoveFriendOperation: ApiOperation<ApiEmptyRequest, RemoveFriendResponse> {
-    init(id: String) {
-        super.init(method: .delete, path: "/friends/\(id)")
+    init(friendId: String) {
+        super.init(method: .delete, path: "/friends/\(friendId)")
     }
 }
 

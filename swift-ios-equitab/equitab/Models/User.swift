@@ -7,10 +7,15 @@ final class User: Decodable {
     var username: String?
     var phoneNumber: String?
     var picture: String?
-    var aggregate: Double?
+    @Transient var aggregate: Double?
 
     struct Reference: Encodable {
         var id: Int
+
+        struct WithAggregate: Encodable {
+            var id: Int
+            var aggregate: Double
+        }
     }
 
     enum CodingKeys: String, CodingKey {

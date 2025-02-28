@@ -1,8 +1,8 @@
 import Foundation
 
 final class ViewFriendOperation: ApiOperation<ApiEmptyRequest, ViewFriendResponse> {
-    init(id: Int) {
-        super.init(method: .get, path: "/friends/\(id)")
+    init(friendId: Int) {
+        super.init(method: .get, path: "/friends/\(friendId)")
     }
 }
 

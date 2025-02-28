@@ -1,8 +1,8 @@
 import Foundation
 
 final class ViewLedgerOperation: ApiOperation<ApiEmptyRequest, ViewLedgerResponse> {
-    init(id: Int) {
-        super.init(method: .get, path: "/ledgers/\(id)")
+    init(ledgerId: Int) {
+        super.init(method: .get, path: "/ledgers/\(ledgerId)")
     }
 }
 

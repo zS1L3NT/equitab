@@ -8,7 +8,7 @@ final class Ledger: Decodable {
     var picture: String
     var currency: Currency
     var users: [User]
-    var aggregate: Double?
+    @Transient var aggregate: Double?
 
     struct Reference: Encodable {
         var id: Int
