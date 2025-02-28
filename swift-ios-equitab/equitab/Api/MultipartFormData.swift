@@ -1,8 +1,10 @@
 import Foundation
 
+protocol HasCodingKeys {
+    associatedtype CodingKeys: CodingKey
+}
+
 protocol ApiMultipartFormDataRequest: ApiRequest {
-    associatedtype Key: CodingKey
-    var keyedBy: Key.Type { get }
     var boundary: String { get }
 }
 
@@ -12,14 +14,26 @@ extension Array where Element == Data {
     }
 }
 
+extension ApiMultipartFormDataRequest where Self: HasCodingKeys {
+    fileprivate func getCodingKeys() -> CodingKey.Type? {
+        return type(of: self).CodingKeys
+    }
+}
+
 extension ApiMultipartFormDataRequest {
+    fileprivate func getCodingKeys() -> CodingKey.Type? {
+        return nil
+    }
+
     func toData(method: HttpMethod) throws -> Data {
         var lines: [Data] = []
 
+        let CodingKeys = getCodingKeys()
         for child in Mirror(reflecting: self).children {
             guard
                 let label = child.label,
-                let key = keyedBy.init(stringValue: label)?.stringValue
+                let key = CodingKeys != nil
+                    ? CodingKeys!.init(stringValue: label)?.stringValue : label
             else { continue }
 
             lines.append("--\(boundary)")

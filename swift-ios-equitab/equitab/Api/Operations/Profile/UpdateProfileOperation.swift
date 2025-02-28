@@ -6,8 +6,7 @@ final class UpdateProfileOperation: ApiOperation<UpdateProfileRequest, UpdatePro
     }
 }
 
-struct UpdateProfileRequest: ApiMultipartFormDataRequest {
-    let keyedBy = User.CodingKeys.self
+struct UpdateProfileRequest: ApiMultipartFormDataRequest, HasCodingKeys {
     let boundary = UUID().uuidString
 
     let id: Int
@@ -16,6 +15,8 @@ struct UpdateProfileRequest: ApiMultipartFormDataRequest {
     let picture: Data?
     let password: String?
     let passwordConfirmation: String?
+
+    typealias CodingKeys = User.CodingKeys
 }
 
 struct UpdateProfileResponse: ApiActionResponse, ApiDataResponse {

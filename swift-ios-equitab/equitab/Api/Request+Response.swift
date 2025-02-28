@@ -2,7 +2,9 @@ import Foundation
 
 protocol ApiRequest {}
 
-struct ApiEmptyRequest: ApiRequest {}
+protocol ApiJsonRequest: ApiRequest, Encodable {}
+
+struct ApiEmptyRequest: ApiJsonRequest {}
 
 protocol ApiResponse: Decodable {}
 
@@ -23,16 +25,10 @@ struct ApiErrorResponse: ApiResponse, Error {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        do {
-            let error = try container.decode(CustomError.self, forKey: .error)
-            type = error.type
-            message = error.message
-            fields = error.fields
-        } catch {
-            type = "Decoding error"
-            message = "Failed to decode error response: \(error.localizedDescription)"
-            fields = nil
-        }
+        let error = try container.decode(CustomError.self, forKey: .error)
+        type = error.type
+        message = error.message
+        fields = error.fields
     }
 
     struct CustomError: Decodable {

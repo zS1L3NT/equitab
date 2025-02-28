@@ -6,7 +6,7 @@ final class LoginOperation: ApiOperation<LoginRequest, LoginResponse> {
     }
 }
 
-struct LoginRequest: ApiRequest {
+struct LoginRequest: ApiJsonRequest {
     let username: String
     let password: String
     let deviceName: String
@@ -19,5 +19,10 @@ struct LoginRequest: ApiRequest {
 
 struct LoginResponse: ApiActionResponse, ApiDataResponse {
     let message: String
-    let data: User
+    let data: Data
+
+    struct Data: Decodable {
+        let token: String
+        let user: User
+    }
 }

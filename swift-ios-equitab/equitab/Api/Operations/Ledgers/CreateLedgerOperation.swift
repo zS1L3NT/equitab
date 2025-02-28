@@ -7,7 +7,6 @@ final class CreateLedgerOperation: ApiOperation<CreateLedgerRequest, CreateLedge
 }
 
 struct CreateLedgerRequest: ApiMultipartFormDataRequest {
-    let keyedBy = Ledger.CodingKeys.self
     let boundary = UUID().uuidString
 
     let name: String
