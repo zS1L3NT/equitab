@@ -19,7 +19,7 @@ struct ApiErrorResponse: ApiResponse, Error {
         self.fields = nil
     }
 
-    private enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case error
     }
 
@@ -35,23 +35,6 @@ struct ApiErrorResponse: ApiResponse, Error {
         let type: String
         let message: String
         let fields: [String: [String]]?
-
-        private enum CodingKeys: String, CodingKey {
-            case type, message, fields
-        }
-
-        init(type: String, message: String, fields: [String: [String]]?) {
-            self.type = type
-            self.message = message
-            self.fields = fields
-        }
-
-        init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            type = try container.decode(String.self, forKey: .type)
-            message = try container.decode(String.self, forKey: .message)
-            fields = try container.decodeIfPresent([String: [String]].self, forKey: .fields)
-        }
     }
 }
 
@@ -75,7 +58,7 @@ struct ApiPaginationMeta: Decodable {
     let pages: Int
     let total: Int
 
-    private enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case page = "current_page"
         case pages = "last_page"
         case total

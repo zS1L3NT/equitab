@@ -11,7 +11,7 @@ struct LoginRequest: ApiJsonRequest {
     let password: String
     let deviceName: String
 
-    private enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case username, password
         case deviceName = "device_name"
     }
