@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureJsonApi;
+use App\Http\Middleware\UnpackJsonInFormData;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -20,9 +21,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->api(prepend: [
-            EnsureJsonApi::class
-        ]);
+        $middleware->api(
+            prepend: [
+                EnsureJsonApi::class
+            ],
+            append: [
+                UnpackJsonInFormData::class
+            ]
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (ValidationException $e) {
