@@ -8,7 +8,7 @@ final class Currency: Decodable {
     var symbol: String
     var decimals: Int
 
-    struct Reference {
+    struct Reference: Encodable {
         var code: String
     }
 

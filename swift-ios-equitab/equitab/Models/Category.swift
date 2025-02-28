@@ -7,7 +7,7 @@ final class Category: Decodable {
     var name: String
     var picture: String
 
-    struct Reference {
+    struct Reference: Encodable {
         var id: Int
     }
 

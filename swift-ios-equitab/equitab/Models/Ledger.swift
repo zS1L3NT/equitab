@@ -10,7 +10,7 @@ final class Ledger: Decodable {
     var users: [User]
     var aggregate: Double?
 
-    struct Reference {
+    struct Reference: Encodable {
         var id: Int
     }
 

@@ -9,7 +9,7 @@ final class User: Decodable {
     var picture: String?
     var aggregate: Double?
 
-    struct Reference {
+    struct Reference: Encodable {
         var id: Int
     }
 

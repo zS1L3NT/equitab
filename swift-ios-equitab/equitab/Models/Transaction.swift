@@ -15,7 +15,7 @@ final class Transaction: Decodable {
     var products: [Product]?
     var productCount: Int?
 
-    struct Reference {
+    struct Reference: Encodable {
         var id: Int
     }
 
