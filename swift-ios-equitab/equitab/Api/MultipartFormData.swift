@@ -66,7 +66,7 @@ extension ApiMultipartFormDataRequest {
         lines.append("")
         lines.append(method.rawValue)
 
-        lines.append(Data("--\(boundary)--".utf8))
+        lines.append("--\(boundary)--")
 
         return Data(lines.joined(separator: Data("\r\n".utf8)))
     }
